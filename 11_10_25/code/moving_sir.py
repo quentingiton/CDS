@@ -179,14 +179,14 @@ class MovingSIR:
 
 if __name__ == "__main__":
     sim = MovingSIR(
-        N=160,
+        N=300,
         steps=1000,
         dt=1.0,
         speed=0.006,
-        infection_radius=0.035,
-        beta=0.015,
+        infection_radius=0.03,
+        beta=0.02,
         infection_duration_range=(220, 360),
         seed=2214
     )
     # Save a short GIF and also show the animation window
-    sim.run(save_mp4_path="sir_moving_agents.mp4", show=False, interval=30, movie_duration_sec=20)
+    sim.run(save_mp4_path="11_10_25/medias/videos/sir_moving_agents.mp4", show=False, interval=30, movie_duration_sec=20)

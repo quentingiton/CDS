@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/theme/quarto-8cb34f12314018b64937f69e91f11582.css">
+  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/theme/quarto-0d8db42c84a342584fb5a40a116d61e6.css">
   <link rel="stylesheet" href="styles.css">
   <link href="presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -146,8 +146,84 @@ Café des Sciences — Quentin Giton
 </div>
 
 </section>
-<section id="les-épidémies" class="slide level2">
-<h2>Les épidémies</h2>
+<section id="modéliser-la-propagation-dune-épidémie" class="slide level2">
+<h2>Modéliser la propagation d’une épidémie</h2>
+<ul>
+<li class="fragment"><span class="math inline">\(S_J\)</span> : Proportion de personnes <strong>Saines</strong> au <strong>Jour <span class="math inline">\(J\)</span></strong></li>
+<li class="fragment"><span class="math inline">\(I_J\)</span> : Proportion de personnes <strong>Infectées</strong> au <strong>Jour <span class="math inline">\(J\)</span></strong></li>
+<li class="fragment"><span class="math inline">\(\gamma\)</span> : Taux de guérison</li>
+<li class="fragment"><span class="math inline">\(R_0\)</span> : Nombre moyen de nouvelles contaminations dues à un infecté</li>
+</ul>
+<p><span class="spacer-2" aria-hidden="true"></span></p>
+<div class="fragment">
+<div class="r-stack">
+<p><span class="math display">\[
+I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
+\]</span></p>
+<div class="fragment brace-down">
+<p><span class="math display">\[
+\phantom{I_{J+1}-I_J =\,}\underbrace{\phantom{\gamma I_J}}_{\geq 0}\phantom{(R_0 S_J - 1).}
+\]</span></p>
+</div>
+<div class="fragment brace-down">
+<p><span class="math display">\[
+\phantom{I_{J+1}-I_J =\gamma I_J(}\underbrace{\phantom{R_0 S_J - 1}}_{\geq 0\ \mathrm{ou}\ \leq 0\ \mathrm{?}}\phantom{).}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="le-seuil-critique-r_01">Le seuil critique <span class="math inline">\(R_0=1\)</span></h3>
+<div class="fragment">
+<p><span class="math inline">\(R_0\)</span> représente la “connectivité” du graphe de contamination :</p>
+</div>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="medias/images/low_connectedness.png"></p>
+</div><div class="column" style="width:50%;">
+<p><span class="spacer-6" aria-hidden="true"></span> Peu connecté</p>
+</div></div>
+</div><div class="column fragment" style="width:50%;">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="medias/images/high_connectedness.png"></p>
+</div><div class="column" style="width:50%;">
+<p><span class="spacer-6" aria-hidden="true"></span> Très connecté</p>
+</div></div>
+</div></div>
+</div>
+<aside class="notes">
+<p>Parler de <span class="math inline">\(R_0\leq,\ =,\ \geq 1\)</span></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section class="slide level2">
+
+<div class="center-v">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><video data-src="medias/videos/0-37__sir_moving_agents.mp4" controls=""><a href="medias/videos/0-37__sir_moving_agents.mp4">Video</a></video></p>
+</div><div class="column fragment" style="width:50%;">
+<p><video data-src="medias/videos/4-90__sir_moving_agents.mp4" controls=""><a href="medias/videos/4-90__sir_moving_agents.mp4">Video</a></video></p>
+</div></div>
+</div>
+</section>
+<section id="modéliser-la-propagation-dun-feu-de-forêt" class="slide level2">
+<h2>Modéliser la propagation d’un feu de forêt</h2>
 
 </section>
     </div>

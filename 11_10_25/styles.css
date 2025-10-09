@@ -1,5 +1,5 @@
 /* Base text size */
-:root { --r-main-font-size: 26px; }     /* default ~36–40px; pick what you like */
+:root { --r-main-font-size: 36px; }     /* default ~36–40px; pick what you like */
 
 /* Headings (optional) */
 :root {

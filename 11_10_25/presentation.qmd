@@ -26,5 +26,92 @@ toc: false
 number-sections: false
 ---
 
-## Les épidémies
+## Modéliser la propagation d'une épidémie
+
+::: {.incremental}
+- $S_J$ : Proportion de personnes **Saines** au **Jour $J$**
+- $I_J$ : Proportion de personnes **Infectées** au **Jour $J$**
+- $\gamma$ : Taux de guérison
+- $R_0$ : Nombre moyen de nouvelles contaminations dues à un infecté
+:::
+
+<span class="spacer-2" aria-hidden="true"></span>
+
+::: {.fragment}
+::: {.r-stack}
+$$
+I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
+$$
+
+::: {.fragment .brace-down}
+$$
+\phantom{I_{J+1}-I_J =\,}\underbrace{\phantom{\gamma I_J}}_{\geq 0}\phantom{(R_0 S_J - 1).}
+$$
+:::
+
+::: {.fragment .brace-down}
+$$
+\phantom{I_{J+1}-I_J =\gamma I_J(}\underbrace{\phantom{R_0 S_J - 1}}_{\geq 0\ \mathrm{ou}\ \leq 0\ \mathrm{?}}\phantom{).}
+$$
+:::
+:::
+:::
+
+---
+
+### Le seuil critique $R_0=1$
+
+::: {.fragment}
+$R_0$ représente la "connectivité" du graphe de contamination :
+:::
+
+::: {.fragment}
+::: {.columns}
+::: {.column width=50%}
+::: {.columns}
+::: {.column width=40%}
+![](medias/images/low_connectedness.png)
+:::
+
+::: {.column width=50%}
+<span class="spacer-6" aria-hidden="true"></span>
+Peu connecté
+:::
+:::
+:::
+
+::: {.column width=50% .fragment}
+::: {.columns}
+::: {.column width=40%}
+![](medias/images/high_connectedness.png)
+:::
+
+::: {.column width=50%}
+<span class="spacer-6" aria-hidden="true"></span>
+Très connecté
+:::
+:::
+:::
+:::
+:::
+
+::: {.notes}
+Parler de $R_0\leq,\ =,\ \geq 1$
+:::
+
+---
+
+::: {.center-v}
+::: {.columns}
+::: {.column width=50%}
+![](medias/videos/0-37__sir_moving_agents.mp4)
+:::
+
+::: {.column width=50% .fragment}
+![](medias/videos/4-90__sir_moving_agents.mp4)
+:::
+:::
+:::
+
+## Modéliser la propagation d'un feu de forêt
 
