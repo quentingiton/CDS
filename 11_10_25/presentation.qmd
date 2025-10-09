@@ -1,0 +1,30 @@
+---
+title: "Une histoire de connectivité : propagation des épidémies et des feux de forêts"
+author: "Café des Sciences --- Quentin Giton"
+subtitle: |
+  ::: {.columns}
+  ::: {.column width=50%}
+  ![](medias/images/covid.jpg){width=73%}
+  :::
+
+  ::: {.column width=50%}
+  ![](medias/images/feux.jpeg)
+  :::
+  :::
+format: 
+    revealjs: 
+        theme: [default, theme.scss]
+        highlight-style: github 
+        css: styles.css
+        slide-number: true
+        incremental: false
+        auto-play-media: false
+        embed-resources: false
+        center: false
+        auto-stretch: false
+toc: false
+number-sections: false
+---
+
+## Les épidémies
+

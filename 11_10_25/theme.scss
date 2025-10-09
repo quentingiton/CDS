@@ -1,0 +1,157 @@
+/* rentree_parma/theme.scss */
+
+/*-- scss:defaults --*/
+$brand-accent-light: #e6a08a4a;
+$brand-accent:      #d77e62;  // your link color
+$brand-accent-dark: #b7654b;  // hover/darker accent
+$brand-title:      #d77e62;
+$brand-bold:      #d77e62;
+
+/*-- scss:rules --*/
+/* Brand tokens exposed as CSS variables */
+:root {
+  --brand-accent-light: #{$brand-accent-light};
+  --brand-accent:      #{$brand-accent};
+  --brand-accent-dark: #{$brand-accent-dark};
+}
+
+/* Reveal.js theme variables */
+:root {
+  --r-link-color:      var(--brand-accent);
+  --r-link-color-dark: var(--brand-accent-dark);
+  --brand-title:      #{$brand-title};
+  --brand-bold:      #{$brand-bold};
+}
+
+/* Slide titles & headings */
+.reveal h1, .reveal h2, .reveal h3 {
+   color: var(--brand-title); 
+}
+
+
+/* Links with a neat underline */
+.reveal a {
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.reveal a:hover,
+.reveal a:focus {
+  color: var(--r-link-color-dark);
+}
+
+
+/* Bubble style for theorem-like blocks */
+.reveal .theorem,
+.reveal .lemma,
+.reveal .definition,
+.reveal .corollary,
+.reveal .proof {
+  position: relative;
+  background: #e6a08a4a;
+  border: 1px solid #d77e62;
+  border-radius: 14px;
+  padding: 0.45em 0.55em 0.55em;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+/* Pill heading */
+.reveal .theorem .theorem-title,
+.reveal .lemma .lemma-title,
+.reveal .definition .definition-title,
+.reveal .corollary .corollary-title,
+.reveal .proof .proof-title {
+  display: inline-block;
+  margin-bottom: .5em;
+  padding: .15em .6em;
+  border-radius: 999px;
+  background: var(--brand-accent, #d77e62);
+  color: #fff;
+  font-weight: 700;
+}
+
+.spacer      { display:block; height: 1rem; }   /* ≈ 16px */
+.spacer-2    { display:block; height: 2rem; }  /* ≈ 32px */
+
+/* Bold text (but not inside headings) */
+/* .reveal p strong, .reveal li strong, .reveal blockquote strong,
+.reveal dd strong, .reveal dt strong, .reveal figcaption strong,
+.reveal p b, .reveal li b {
+  color: var(--brand-bold);
+  font-weight: 800; /* keep it bold */
+/* } */
+
+/*-- scss:rules --*/
+
+/* Slide layout: top title + centered content + footnotes pinned bottom */
+.reveal .slides section.layout-tc {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* Put the first H2/H3 at the very top of the slide */
+.reveal .slides section.layout-tc > h2:first-of-type,
+.reveal .slides section.layout-tc > h3:first-of-type {
+  margin-top: 0;
+  align-self: flex-start;
+}
+
+/* If you keep a second heading, leave it in the content block, not at top */
+
+/* Content centered vertically in remaining space (left-aligned text) */
+.reveal .slides section.layout-tc .center-v {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;     /* vertical center */
+  align-items: flex-start;     /* keep text left-aligned */
+  text-align: left;
+  width: 100%;
+}
+
+/* Content centered both vertically & horizontally (for videos/demos) */
+.reveal .slides section.layout-tc .center-vh {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;     /* vertical center via flex item filling,
+                                  horizontal center via align-items below */
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* Make media scale nicely inside the centered blocks */
+.reveal .slides section.layout-tc .center-vh img,
+.reveal .slides section.layout-tc .center-vh video {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+}
+
+/* Keep footnotes at the bottom on these slides */
+.reveal .slides section.layout-tc > .footnotes,
+.reveal .slides section.layout-tc > .aside-footnotes {
+  margin-top: auto;
+}
+
+
+
+/* Center the TITLE slide */
+.reveal .slides > section.title-slide {
+  display: grid;
+  place-content: center;
+  min-height: 100%;
+}
+
+/* Final slide with the same look/feel as the title */
+.reveal .slides > section.final-slide {
+  display: grid;
+  place-content: center;
+  min-height: 100%;
+}
+
+/* Make H2 on the final slide as big as an H1 title */
+.reveal .slides section.final-slide h2 {
+  font-size: var(--r-heading1-size);
+  color: var(--brand-title);
+}

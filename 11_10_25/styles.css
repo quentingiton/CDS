@@ -1,0 +1,21 @@
+/* Base text size */
+:root { --r-main-font-size: 26px; }     /* default ~36–40px; pick what you like */
+
+/* Headings (optional) */
+:root {
+  --r-heading1-size: 2.0em;
+  --r-heading2-size: 1.5em;
+  --r-heading3-size: 1.3em;
+}
+
+/* Code & footnotes (optional) */
+.reveal pre code { font-size: 0.9em; }
+.reveal .footnotes { font-size: 0.8em; }
+
+/* Math (works with MathJax v2/v3) */
+.reveal mjx-container[display="true"] { font-size: 1.05em; }   /* display equations */
+.reveal mjx-container:not([display])   { font-size: 1.00em; }   /* inline equations */
+
+.fs-90 { font-size: 0.90em; }
+.fs-80 { font-size: 0.80em; }
+.fs-110{ font-size: 1.10em; }
