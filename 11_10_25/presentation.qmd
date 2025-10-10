@@ -182,9 +182,11 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 :::
 :::
 
+::: {.fs-80}
 - [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
 - [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
 - [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
+:::
 
 ---
 
@@ -200,9 +202,11 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 :::
 :::
 
+::: {.fs-80}
 - [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
 - [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
 - [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
+:::
 
 ## Comparaison des deux phénomènes
 
