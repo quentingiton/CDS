@@ -1,5 +1,5 @@
 ---
-title: "Une histoire de connectivité : propagation des épidémies et des feux de forêts"
+title: "Propagation des épidémies et des feux de forêts: une histoire de connectivité"
 author: "Café des Sciences --- Quentin Giton"
 subtitle: |
   ::: {.columns}
@@ -143,27 +143,31 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 
 ### Illustrations
 
-::: {.columns}
+![](medias/images/bond_below_pc_square_16.png){width=50% fig-align="center"}
 
-::: {.column width=33% .fragment}
-![](medias/images/bond_below_pc_square_16.png)
-:::
-
-::: {.column width=33% .fragment}
-![](medias/images/bond_at_pc_square_16.png)
-:::
-
-::: {.column width=33% .fragment}
-![](medias/images/bond_above_pc_square_16.png)
-:::
-
-:::
-
-::: {.fragment}
 - [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
 - [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
 - [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
-:::
+
+---
+
+### Illustrations
+
+![](medias/images/bond_at_pc_square_16.png){width=50% fig-align="center"}
+
+- [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
+- [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
+- [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
+
+---
+
+### Illustrations
+
+![](medias/images/bond_above_pc_square_16.png){width=50% fig-align="center"}
+
+- [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
+- [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
+- [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
 
 ## Conclusion
 
