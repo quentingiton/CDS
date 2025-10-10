@@ -115,3 +115,70 @@ Parler de $R_0\leq,\ =,\ \geq 1$
 
 ## Modéliser la propagation d'un feu de forêt
 
+::: {.incremental}
+- On modélise une forêt par une **grille** de $N\times N$ cases
+- On choisit une région de départ de feu
+- Le feu se propage vers le Nord, l'Est, le Sud ou l'Ouest avec une certaine **probabilité $p$**
+:::
+
+<span class="spacer-2" aria-hidden="true"></span>
+
+::: {.fragment}
+$\Longrightarrow\quad$ C'est encore une histoire de connectivité du graphe !
+:::
+
+---
+
+### Le seuil critique $p=p_c$
+
+::: {.notes}
+Parler du choix pour définir la probabilité critique (quel proportion d'arbres brûlés on s'autorise ?)
+:::
+
+::: {.fragment}
+![](medias/images/bond_percolation_curve.png)
+:::
+
+---
+
+### Illustrations
+
+::: {.columns}
+
+::: {.column width=33% .fragment}
+![](medias/images/bond_below_pc_square_16.png)
+:::
+
+::: {.column width=33% .fragment}
+![](medias/images/bond_at_pc_square_16.png)
+:::
+
+::: {.column width=33% .fragment}
+![](medias/images/bond_above_pc_square_16.png)
+:::
+
+:::
+
+::: {.fragment}
+- [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
+- [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
+- [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
+:::
+
+## Conclusion
+
+::: {.fragment}
+**Modéliser un phénomène permet de le comprendre, et donc de mieux le contrôler.**
+:::
+
+::: {.incremental}
+- (Epidémies) Facteurs de diminution de $R_0$ :
+  + Confinement ($\downarrow$ le nombre de contacts par jour)
+  + Hygiène/Port du masque ($\downarrow$ la probabilité de transmission)
+  + Isolement des personnes infectées ($\downarrow$ la durée efficace de la maladie)
+- (Incendies) Facteurs de diminution de $p$ :
+  + Débroussaillement
+  + Brûlage tactique
+:::
+
+## Merci de votre attention ! {.final-slide}

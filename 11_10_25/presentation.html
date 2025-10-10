@@ -6,8 +6,8 @@
 <script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.25">
+<link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.24">
 
   <meta name="author" content="Café des Sciences — Quentin Giton">
   <title>Une histoire de connectivité : propagation des épidémies et des feux de forêts</title>
@@ -224,6 +224,76 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 </section>
 <section id="modéliser-la-propagation-dun-feu-de-forêt" class="slide level2">
 <h2>Modéliser la propagation d’un feu de forêt</h2>
+<ul>
+<li class="fragment">On modélise une forêt par une <strong>grille</strong> de <span class="math inline">\(N\times N\)</span> cases</li>
+<li class="fragment">On choisit une région de départ de feu</li>
+<li class="fragment">Le feu se propage vers le Nord, l’Est, le Sud ou l’Ouest avec une certaine <strong>probabilité <span class="math inline">\(p\)</span></strong></li>
+</ul>
+<p><span class="spacer-2" aria-hidden="true"></span></p>
+<div class="fragment">
+<p><span class="math inline">\(\Longrightarrow\quad\)</span> C’est encore une histoire de connectivité du graphe !</p>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="le-seuil-critique-pp_c">Le seuil critique <span class="math inline">\(p=p_c\)</span></h3>
+<aside class="notes">
+<p>Parler du choix pour définir la probabilité critique (quel proportion d’arbres brûlés on s’autorise ?)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<div class="fragment">
+<p><img data-src="medias/images/bond_percolation_curve.png"></p>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="illustrations">Illustrations</h3>
+<div class="columns">
+<div class="column fragment" style="width:33%;">
+<p><img data-src="medias/images/bond_below_pc_square_16.png"></p>
+</div><div class="column fragment" style="width:33%;">
+<p><img data-src="medias/images/bond_at_pc_square_16.png"></p>
+</div><div class="column fragment" style="width:33%;">
+<p><img data-src="medias/images/bond_above_pc_square_16.png"></p>
+</div></div>
+<div class="fragment">
+<ul>
+<li><span style="color: rgb(100%,0%,0%)">En rouge</span> : la région initiale choisie</li>
+<li><span style="color: rgb(100%,50%,0%)">En orange</span> : les arbres brûlés</li>
+<li><span style="color: rgb(0%,60%,0%)">En vert</span> : les arbres sains</li>
+</ul>
+</div>
+</section>
+<section id="conclusion" class="slide level2">
+<h2>Conclusion</h2>
+<div class="fragment">
+<p><strong>Modéliser un phénomène permet de le comprendre, et donc de mieux le contrôler.</strong></p>
+</div>
+<ul>
+<li class="fragment">(Epidémies) Facteurs de diminution de <span class="math inline">\(R_0\)</span> :
+<ul>
+<li class="fragment">Confinement (<span class="math inline">\(\downarrow\)</span> le nombre de contacts par jour)</li>
+<li class="fragment">Hygiène/Port du masque (<span class="math inline">\(\downarrow\)</span> la probabilité de transmission)</li>
+<li class="fragment">Isolement des personnes infectées (<span class="math inline">\(\downarrow\)</span> la durée efficace de la maladie)</li>
+</ul></li>
+<li class="fragment">(Incendies) Facteurs de diminution de <span class="math inline">\(p\)</span> :
+<ul>
+<li class="fragment">Débroussaillement</li>
+<li class="fragment">Brûlage tactique</li>
+</ul></li>
+</ul>
+</section>
+<section id="merci-de-votre-attention" class="slide level2 final-slide">
+<h2>Merci de votre attention !</h2>
 
 </section>
     </div>
