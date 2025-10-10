@@ -62,7 +62,7 @@ $$
 ### Le seuil critique $R_0=1$
 
 ::: {.fragment}
-$R_0$ représente la "connectivité" du graphe de contamination :
+$R_0$ représente la **connectivité** du "graphe de contamination" :
 :::
 
 ::: {.fragment}
@@ -121,15 +121,43 @@ Parler de $R_0\leq,\ =,\ \geq 1$
 - Le feu se propage vers le Nord, l'Est, le Sud ou l'Ouest avec une certaine **probabilité $p$**
 :::
 
-<span class="spacer-2" aria-hidden="true"></span>
+<span class="spacer" aria-hidden="true"></span>
 
 ::: {.fragment}
-$\Longrightarrow\quad$ C'est encore une histoire de connectivité du graphe !
+$\Longrightarrow\quad$ C'est encore une histoire de **connectivité** du "graphe de la forêt" !
+
+::: {.columns}
+::: {.column width=50%}
+::: {.columns}
+::: {.column width=40%}
+![](medias/images/low_connectedness.png)
+:::
+
+::: {.column width=50%}
+<span class="spacer-6" aria-hidden="true"></span>
+Peu connecté
+:::
+:::
+:::
+
+::: {.column width=50%}
+::: {.columns}
+::: {.column width=40%}
+![](medias/images/high_connectedness.png)
+:::
+
+::: {.column width=50%}
+<span class="spacer-6" aria-hidden="true"></span>
+Très connecté
+:::
+:::
+:::
+:::
 :::
 
 ---
 
-### Le seuil critique $p=p_c$
+### Le seuil critique $p_c$
 
 ::: {.notes}
 Parler du choix pour définir la probabilité critique (quel proportion d'arbres brûlés on s'autorise ?)
@@ -141,9 +169,18 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 
 ---
 
-### Illustrations
+### Illustrations ($p<p_c$)
 
-![](medias/images/bond_below_pc_square_16.png){width=50% fig-align="center"}
+
+::: {.columns}
+::: {.column width=50%}
+![](medias/images/bond_below_pc_square_16.png){width=80% fig-align="center"}
+:::
+
+::: {.column width=50% .fragment}
+![](medias/videos/0-37__sir_moving_agents.mp4){width=80% fig-align="center"}
+:::
+:::
 
 - [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
 - [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
@@ -151,23 +188,128 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 
 ---
 
-### Illustrations
+### Illustrations ($p>p_c$)
 
-![](medias/images/bond_at_pc_square_16.png){width=50% fig-align="center"}
+::: {.columns}
+::: {.column width=50%}
+![](medias/images/bond_above_pc_square_16.png){width=80% fig-align="center"}
+:::
 
-- [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
-- [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
-- [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
-
----
-
-### Illustrations
-
-![](medias/images/bond_above_pc_square_16.png){width=50% fig-align="center"}
+::: {.column width=50% .fragment}
+![](medias/videos/4-90__sir_moving_agents.mp4){width=80% fig-align="center"}
+:::
+:::
 
 - [En rouge]{style="color: rgb(100%,0%,0%)"} : la région initiale choisie
 - [En orange]{style="color: rgb(100%,50%,0%)"} : les arbres brûlés
 - [En vert]{style="color: rgb(0%,60%,0%)"} : les arbres sains
+
+## Comparaison des deux phénomènes
+
+::: {.compare}
+
+::: {.row .fragment}
+::: {.card} 
+$p$ 
+:::
+
+<div class="arrow">
+  <svg viewBox="0 0 100 10" width="100%" height="14" style="color:#000">
+    <defs>
+      <!-- auto-start-reverse flips the START marker so it points left -->
+      <marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4"
+              orient="auto-start-reverse">
+        <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon>
+      </marker>
+    </defs>
+    <line x1="6" y1="5" x2="94" y2="5"
+          stroke="currentColor" stroke-width="2"
+          marker-start="url(#ah)" marker-end="url(#ah)"/>
+  </svg>
+</div>
+
+::: {.card}
+$R_0$ 
+:::
+:::
+
+::: {.row .fragment}
+::: {.card} 
+$p_c$ (au choix !) 
+:::   
+
+<div class="arrow">
+  <svg viewBox="0 0 100 10" width="100%" height="14" style="color:#000">
+    <defs>
+      <!-- auto-start-reverse flips the START marker so it points left -->
+      <marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4"
+              orient="auto-start-reverse">
+        <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon>
+      </marker>
+    </defs>
+    <line x1="6" y1="5" x2="94" y2="5"
+          stroke="currentColor" stroke-width="2"
+          marker-start="url(#ah)" marker-end="url(#ah)"/>
+  </svg>
+</div>
+
+::: {.card} 
+$1$ 
+:::
+:::
+
+::: {.row .fragment}
+::: {.card} 
+$p < p_c$ 
+:::   
+
+<div class="arrow">
+  <svg viewBox="0 0 100 10" width="100%" height="14" style="color:#000">
+    <defs>
+      <!-- auto-start-reverse flips the START marker so it points left -->
+      <marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4"
+              orient="auto-start-reverse">
+        <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon>
+      </marker>
+    </defs>
+    <line x1="6" y1="5" x2="94" y2="5"
+          stroke="currentColor" stroke-width="2"
+          marker-start="url(#ah)" marker-end="url(#ah)"/>
+  </svg>
+</div>
+
+::: {.card} 
+$R_0 < 1$ 
+:::
+:::
+
+::: {.row .fragment}
+::: {.card} 
+$p > p_c$ 
+:::   
+
+<div class="arrow">
+  <svg viewBox="0 0 100 10" width="100%" height="14" style="color:#000">
+    <defs>
+      <!-- auto-start-reverse flips the START marker so it points left -->
+      <marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4"
+              orient="auto-start-reverse">
+        <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon>
+      </marker>
+    </defs>
+    <line x1="6" y1="5" x2="94" y2="5"
+          stroke="currentColor" stroke-width="2"
+          marker-start="url(#ah)" marker-end="url(#ah)"/>
+  </svg>
+</div>
+
+::: {.card} 
+$R_0 > 1$ 
+:::
+:::
+
+:::
+
 
 ## Conclusion
 
@@ -186,3 +328,26 @@ Parler du choix pour définir la probabilité critique (quel proportion d'arbres
 :::
 
 ## Merci de votre attention ! {.final-slide}
+
+{=html}
+<script>
+(function () {
+  function equalizeAll() {
+    document.querySelectorAll('.compare').forEach(grid => {
+      const cards = grid.querySelectorAll('.card');
+      let maxH = 0;
+      cards.forEach(c => { c.style.minHeight = ''; });
+      cards.forEach(c => { maxH = Math.max(maxH, c.getBoundingClientRect().height); });
+      const h = Math.ceil(maxH) + 'px';
+      cards.forEach(c => { c.style.minHeight = h; });
+    });
+  }
+  function afterTypeset(cb){
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().then(cb, cb);
+    else cb();
+  }
+  Reveal.on('ready', () => afterTypeset(equalizeAll));
+  Reveal.on('slidechanged', () => afterTypeset(equalizeAll));
+  window.addEventListener('resize', equalizeAll);
+})();
+</script>

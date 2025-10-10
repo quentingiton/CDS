@@ -1,0 +1,23 @@
+<script>
+(function () {
+  function equalizeAll() {
+    document.querySelectorAll('.compare').forEach(grid => {
+      const cards = grid.querySelectorAll('.card');
+      let maxH = 0;
+      cards.forEach(c => c.style.minHeight = '');
+      cards.forEach(c => { maxH = Math.max(maxH, c.getBoundingClientRect().height); });
+      const h = Math.ceil(maxH) + 'px';
+      cards.forEach(c => c.style.minHeight = h);
+    });
+  }
+  function afterTypeset(cb){
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().then(cb, cb);
+    else cb();
+  }
+  Reveal.on('ready',       () => afterTypeset(equalizeAll));
+  Reveal.on('slidechanged',() => afterTypeset(equalizeAll));
+  Reveal.on('fragmentshown', equalizeAll);   // ensure equalization when rows appear
+  Reveal.on('fragmenthidden', equalizeAll);
+  window.addEventListener('resize', equalizeAll);
+})();
+</script>

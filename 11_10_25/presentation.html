@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/theme/quarto-0d8db42c84a342584fb5a40a116d61e6.css">
+  <link rel="stylesheet" href="presentation_files/libs/revealjs/dist/theme/quarto-7f8180f75a2fbffe1603b546c1fe665a.css">
   <link rel="stylesheet" href="styles.css">
   <link href="presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -177,7 +177,7 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 
 <h3 id="le-seuil-critique-r_01">Le seuil critique <span class="math inline">\(R_0=1\)</span></h3>
 <div class="fragment">
-<p><span class="math inline">\(R_0\)</span> représente la “connectivité” du graphe de contamination :</p>
+<p><span class="math inline">\(R_0\)</span> représente la <strong>connectivité</strong> du “graphe de contamination” :</p>
 </div>
 <div class="fragment">
 <div class="columns">
@@ -229,14 +229,30 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 <li class="fragment">On choisit une région de départ de feu</li>
 <li class="fragment">Le feu se propage vers le Nord, l’Est, le Sud ou l’Ouest avec une certaine <strong>probabilité <span class="math inline">\(p\)</span></strong></li>
 </ul>
-<p><span class="spacer-2" aria-hidden="true"></span></p>
+<p><span class="spacer" aria-hidden="true"></span></p>
 <div class="fragment">
-<p><span class="math inline">\(\Longrightarrow\quad\)</span> C’est encore une histoire de connectivité du graphe !</p>
+<p><span class="math inline">\(\Longrightarrow\quad\)</span> C’est encore une histoire de <strong>connectivité</strong> du “graphe de la forêt” !</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="medias/images/low_connectedness.png"></p>
+</div><div class="column" style="width:50%;">
+<p><span class="spacer-6" aria-hidden="true"></span> Peu connecté</p>
+</div></div>
+</div><div class="column" style="width:50%;">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="medias/images/high_connectedness.png"></p>
+</div><div class="column" style="width:50%;">
+<p><span class="spacer-6" aria-hidden="true"></span> Très connecté</p>
+</div></div>
+</div></div>
 </div>
 </section>
 <section class="slide level2">
 
-<h3 id="le-seuil-critique-pp_c">Le seuil critique <span class="math inline">\(p=p_c\)</span></h3>
+<h3 id="le-seuil-critique-p_c">Le seuil critique <span class="math inline">\(p_c\)</span></h3>
 <aside class="notes">
 <p>Parler du choix pour définir la probabilité critique (quel proportion d’arbres brûlés on s’autorise ?)</p>
 <style type="text/css">
@@ -256,12 +272,21 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 </section>
 <section class="slide level2">
 
-<h3 id="illustrations">Illustrations</h3>
+<h3 id="illustrations-pp_c">Illustrations (<span class="math inline">\(p&lt;p_c\)</span>)</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="medias/images/bond_below_pc_square_16.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="medias/images/bond_below_pc_square_16.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
 </figure>
 </div>
+</div><div class="column fragment" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><video data-src="medias/videos/0-37__sir_moving_agents.mp4" class="quarto-figure quarto-figure-center" style="width:80.0%" controls=""><a href="medias/videos/0-37__sir_moving_agents.mp4">Video</a></video></p>
+</figure>
+</div>
+</div></div>
 <ul>
 <li><span style="color: rgb(100%,0%,0%)">En rouge</span> : la région initiale choisie</li>
 <li><span style="color: rgb(100%,50%,0%)">En orange</span> : les arbres brûlés</li>
@@ -270,31 +295,75 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 </section>
 <section class="slide level2">
 
-<h3 id="illustrations-1">Illustrations</h3>
+<h3 id="illustrations-pp_c-1">Illustrations (<span class="math inline">\(p&gt;p_c\)</span>)</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="medias/images/bond_at_pc_square_16.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="medias/images/bond_above_pc_square_16.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
 </figure>
 </div>
+</div><div class="column fragment" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><video data-src="medias/videos/4-90__sir_moving_agents.mp4" class="quarto-figure quarto-figure-center" style="width:80.0%" controls=""><a href="medias/videos/4-90__sir_moving_agents.mp4">Video</a></video></p>
+</figure>
+</div>
+</div></div>
 <ul>
 <li><span style="color: rgb(100%,0%,0%)">En rouge</span> : la région initiale choisie</li>
 <li><span style="color: rgb(100%,50%,0%)">En orange</span> : les arbres brûlés</li>
 <li><span style="color: rgb(0%,60%,0%)">En vert</span> : les arbres sains</li>
 </ul>
 </section>
-<section class="slide level2">
-
-<h3 id="illustrations-2">Illustrations</h3>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="medias/images/bond_above_pc_square_16.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
+<section id="comparaison-des-deux-phénomènes" class="slide level2">
+<h2>Comparaison des deux phénomènes</h2>
+<div class="compare">
+<div class="row fragment">
+<div class="card">
+<p><span class="math inline">\(p\)</span></p>
 </div>
-<ul>
-<li><span style="color: rgb(100%,0%,0%)">En rouge</span> : la région initiale choisie</li>
-<li><span style="color: rgb(100%,50%,0%)">En orange</span> : les arbres brûlés</li>
-<li><span style="color: rgb(0%,60%,0%)">En vert</span> : les arbres sains</li>
-</ul>
+<div class="arrow">
+<p><svg viewbox="0 0 100 10" width="100%" height="14" style="color:#000"> <defs> <!-- auto-start-reverse flips the START marker so it points left --> <marker id="ah" markerwidth="8" markerheight="8" refx="4" refy="4" orient="auto-start-reverse"> <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon> </marker> </defs> <line x1="6" y1="5" x2="94" y2="5" stroke="currentColor" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"></line> </svg></p>
+</div>
+<div class="card">
+<p><span class="math inline">\(R_0\)</span></p>
+</div>
+</div>
+<div class="row fragment">
+<div class="card">
+<p><span class="math inline">\(p_c\)</span> (au choix !)</p>
+</div>
+<div class="arrow">
+<p><svg viewbox="0 0 100 10" width="100%" height="14" style="color:#000"> <defs> <!-- auto-start-reverse flips the START marker so it points left --> <marker id="ah" markerwidth="8" markerheight="8" refx="4" refy="4" orient="auto-start-reverse"> <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon> </marker> </defs> <line x1="6" y1="5" x2="94" y2="5" stroke="currentColor" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"></line> </svg></p>
+</div>
+<div class="card">
+<p><span class="math inline">\(1\)</span></p>
+</div>
+</div>
+<div class="row fragment">
+<div class="card">
+<p><span class="math inline">\(p &lt; p_c\)</span></p>
+</div>
+<div class="arrow">
+<p><svg viewbox="0 0 100 10" width="100%" height="14" style="color:#000"> <defs> <!-- auto-start-reverse flips the START marker so it points left --> <marker id="ah" markerwidth="8" markerheight="8" refx="4" refy="4" orient="auto-start-reverse"> <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon> </marker> </defs> <line x1="6" y1="5" x2="94" y2="5" stroke="currentColor" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"></line> </svg></p>
+</div>
+<div class="card">
+<p><span class="math inline">\(R_0 &lt; 1\)</span></p>
+</div>
+</div>
+<div class="row fragment">
+<div class="card">
+<p><span class="math inline">\(p &gt; p_c\)</span></p>
+</div>
+<div class="arrow">
+<p><svg viewbox="0 0 100 10" width="100%" height="14" style="color:#000"> <defs> <!-- auto-start-reverse flips the START marker so it points left --> <marker id="ah" markerwidth="8" markerheight="8" refx="4" refy="4" orient="auto-start-reverse"> <polygon points="0,0 8,4 0,8" fill="currentColor"></polygon> </marker> </defs> <line x1="6" y1="5" x2="94" y2="5" stroke="currentColor" stroke-width="2" marker-start="url(#ah)" marker-end="url(#ah)"></line> </svg></p>
+</div>
+<div class="card">
+<p><span class="math inline">\(R_0 &gt; 1\)</span></p>
+</div>
+</div>
+</div>
 </section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
@@ -317,6 +386,28 @@ I_{J+1}-I_J = \gamma I_J(R_0 S_J - 1).
 </section>
 <section id="merci-de-votre-attention" class="slide level2 final-slide">
 <h2>Merci de votre attention !</h2>
+{=html}
+<script>
+(function () {
+  function equalizeAll() {
+    document.querySelectorAll('.compare').forEach(grid => {
+      const cards = grid.querySelectorAll('.card');
+      let maxH = 0;
+      cards.forEach(c => { c.style.minHeight = ''; });
+      cards.forEach(c => { maxH = Math.max(maxH, c.getBoundingClientRect().height); });
+      const h = Math.ceil(maxH) + 'px';
+      cards.forEach(c => { c.style.minHeight = h; });
+    });
+  }
+  function afterTypeset(cb){
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().then(cb, cb);
+    else cb();
+  }
+  Reveal.on('ready', () => afterTypeset(equalizeAll));
+  Reveal.on('slidechanged', () => afterTypeset(equalizeAll));
+  window.addEventListener('resize', equalizeAll);
+})();
+</script>
 
 </section>
     </div>

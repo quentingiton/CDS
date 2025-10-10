@@ -166,3 +166,49 @@ $brand-bold:      #d77e62;
 .reveal .brace-down mjx-container[display="true"] { transform: translateY(0.7em); }
 /* MathJax v2 fallback */
 .reveal .brace-down .MathJax_Display { transform: translateY(0.7em); }
+
+
+
+
+/*-- scss:rules --*/
+
+/* 2 columns of cards + a thin middle column for the arrow */
+.reveal .compare{
+  display: grid;
+  grid-template-columns: 1fr 3.5rem 1fr; /* middle stays centered */
+  gap: 1rem;
+}
+.reveal .compare .row{
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 3.5rem 1fr; /* same three columns per row */
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* cards: center text inside the boxes */
+.reveal .compare .card{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: .9em 1.1em;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: var(--brand-accent-light, rgba(0,0,0,.04));
+}
+
+/* the middle “arrow” cell */
+.reveal .compare .arrow{
+  display: grid;
+  place-items: center;
+  color:#000 !important;
+}
+
+/* Stack on narrow screens and hide arrows */
+@media (max-width: 1100px){
+  .reveal .compare{ grid-template-columns: 1fr; }
+  .reveal .compare .row{ grid-template-columns: 1fr; }
+  .reveal .compare .arrow{ display: none; }
+}
+
