@@ -1,0 +1,69 @@
+{
+  "slides": [
+    {
+      "loop": false,
+      "auto_next": false,
+      "playback_rate": 1.0,
+      "reversed_playback_rate": 1.0,
+      "notes": "",
+      "dedent_notes": true,
+      "skip_animations": false,
+      "src": null,
+      "file": "slides\\files\\RareEarths\\91f34b9c89455fd0381cd8bfb95471f3e12463644206e597ea66bbed61c96163.mp4",
+      "rev_file": "slides\\files\\RareEarths\\91f34b9c89455fd0381cd8bfb95471f3e12463644206e597ea66bbed61c96163_reversed.mp4"
+    },
+    {
+      "loop": false,
+      "auto_next": false,
+      "playback_rate": 1.0,
+      "reversed_playback_rate": 1.0,
+      "notes": "",
+      "dedent_notes": true,
+      "skip_animations": false,
+      "src": null,
+      "file": "slides\\files\\RareEarths\\c71e6bfc5c82fecd7499a2a8dbf80fcb6f93cd3c007fbdc4a0f3b296d5adeccc.mp4",
+      "rev_file": "slides\\files\\RareEarths\\c71e6bfc5c82fecd7499a2a8dbf80fcb6f93cd3c007fbdc4a0f3b296d5adeccc_reversed.mp4"
+    },
+    {
+      "loop": false,
+      "auto_next": false,
+      "playback_rate": 1.0,
+      "reversed_playback_rate": 1.0,
+      "notes": "",
+      "dedent_notes": true,
+      "skip_animations": false,
+      "src": null,
+      "file": "slides\\files\\RareEarths\\0b88a7e6deeb1b2cb97358c35c24948bc397913bde14c3c991cff4c80514819f.mp4",
+      "rev_file": "slides\\files\\RareEarths\\0b88a7e6deeb1b2cb97358c35c24948bc397913bde14c3c991cff4c80514819f_reversed.mp4"
+    },
+    {
+      "loop": false,
+      "auto_next": false,
+      "playback_rate": 1.0,
+      "reversed_playback_rate": 1.0,
+      "notes": "",
+      "dedent_notes": true,
+      "skip_animations": false,
+      "src": null,
+      "file": "slides\\files\\RareEarths\\f546fd83a9c709ede6f4b28d23d4ef834e9cd8e273868deda4eb5c913ea7cfe3.mp4",
+      "rev_file": "slides\\files\\RareEarths\\f546fd83a9c709ede6f4b28d23d4ef834e9cd8e273868deda4eb5c913ea7cfe3_reversed.mp4"
+    },
+    {
+      "loop": false,
+      "auto_next": false,
+      "playback_rate": 1.0,
+      "reversed_playback_rate": 1.0,
+      "notes": "",
+      "dedent_notes": true,
+      "skip_animations": false,
+      "src": null,
+      "file": "slides\\files\\RareEarths\\31195a3f41da88b6f67e03acfc7c823c89cfe7b46de876084515a45e5a0f42b3.mp4",
+      "rev_file": "slides\\files\\RareEarths\\31195a3f41da88b6f67e03acfc7c823c89cfe7b46de876084515a45e5a0f42b3_reversed.mp4"
+    }
+  ],
+  "resolution": [
+    1920,
+    1080
+  ],
+  "background_color": "black"
+}
