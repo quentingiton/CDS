@@ -22,8 +22,8 @@ class RareEarths(Slide):
         tex_template.add_to_preamble(r"\usepackage{xcolor}")
 
         # params
-        k_num = 9
-        ell_num = 1
+        k_num = 1
+        ell_num = 9
         ball_r = 0.17
         padding = 0.06
 
@@ -129,7 +129,7 @@ class RareEarths(Slide):
             return xs
 
         def simulate_settling(xs, ball_r, left_x, right_x, bottom_y, top_y, fixed_obstacles=None,
-                            g=9, dt=1/60, max_time=4.0, restitution=0.25):
+                            g=9, dt=1/180, max_time=4.0, restitution=0.25):
             n = len(xs)
             pos = np.array([[x, top_y + random.uniform(0.8, 1.6)] for x in xs], dtype=float)
             vel = np.zeros((n, 2), dtype=float)
@@ -201,6 +201,14 @@ class RareEarths(Slide):
                                 if vn < 0:
                                     J = -(1 + restitution) * vn
                                     vel[i] += J * nrm
+
+                for i in range(n):
+                    if pos[i,0] < left:
+                        pos[i,0] = left
+                    if pos[i,0] > right:
+                        pos[i,0] = right
+                    if pos[i,1] < bottom:
+                        pos[i,1] = bottom
 
                 vel *= 0.999  # small damping
                 for i in range(n):
@@ -373,35 +381,26 @@ class RareEarths(Slide):
         bb1[1].set_color(BLUE)       # k 
         bb1.next_to(k_tex, RIGHT, buff=0.12)
         bb1.align_to(b1_text, DOWN)  # match baseline with the old text
-        bb1.set_opacity(0)
-        self.add(bb1)
+        # bb1.set_opacity(0)
+        # self.add(bb1)
 
         bb2 = MathTex("=", f"{ell_num}", font_size=48)
         bb2[0].set_color(WHITE)      # "="
         bb2[1].set_color(RED)       # ell 
         bb2.next_to(ell_tex, RIGHT, buff=0.12)
         bb2.align_to(b2_text, DOWN)  # match baseline with the old text
-        bb2.set_opacity(0)
-        self.add(bb2)
+        # bb2.set_opacity(0)
+        # self.add(bb2)
 
         bb3 = MathTex(f"{k_num + ell_num}", font_size=48)
         bb3[0].set_color(PURPLE)      # k+ell
         bb3.next_to(b3_unchanged, RIGHT, buff=0.12)
         bb3.align_to(b3_transformed, DOWN)  # match baseline with the old text
-        bb3.set_opacity(0)
-        self.add(bb3)
+        # bb3.set_opacity(0)
+        # self.add(bb3)
 
         self.play(
-            ReplacementTransform(b1_text, bb1),
-            bb1.animate.set_opacity(1.0)
-                  )
-        self.play(
-            ReplacementTransform(b2_text, bb2),
-            bb2.animate.set_opacity(1.0)
-                  )
-        self.play(
-            ReplacementTransform(b3_transformed, bb3),
-            bb3.animate.set_opacity(1.0)
+            LaggedStart(*[Transform(b1_text, bb1), Transform(b2_text, bb2), Transform(b3_transformed, bb3)], lag_ratio=1)
                   )
         self.next_slide()
 
@@ -418,19 +417,261 @@ class RareEarths(Slide):
             MoveToTarget(box_group),
             MoveToTarget(bullets)
         )
+
+        props1 = Tex("Concentration de boules bleues :",
+                    tex_template=tex_template,
+                    tex_to_color_map={"bleues": BLUE})
+        props20 = MathTex("c = ", font_size=48)
+        props21 = MathTex(
+            r"\dfrac{",
+            "k",
+            "}{",
+            "N",
+            "}",
+            font_size=48,
+            tex_to_color_map={"k": BLUE, "N": PURPLE}
+        )
+        props22 = MathTex(
+            r"\dfrac{",
+            f"{k_num}",
+            "}{",
+            f"{ell_num+k_num}",
+            "}",
+            font_size=48,
+            tex_to_color_map={
+                str(k_num): BLUE,
+                str(ell_num+k_num): PURPLE
+            }
+        )
+        props23 = MathTex(
+            f"{(k_num/(ell_num+k_num)):.2f}",
+            font_size=48
+        )
+        
+        txt_group = VGroup(props1, props20).arrange(RIGHT, buff=0.5)
+        props = VGroup(txt_group, props21).arrange(RIGHT, buff=0.12).move_to(DOWN * 1.5)
+
+        props22.next_to(props20, RIGHT, buff=0.12)
+        props23.next_to(props20, RIGHT, buff=0.12)
+
+        math_gp = VGroup(props20, props23)
+
+        self.play(Write(props))
+        self.next_slide()
+        self.play(ReplacementTransform(props21, props22))
+        self.next_slide()
+        self.play(
+            FadeOut(props22, shift= UP * 0.3),
+            FadeIn(props23, shift= UP * 0.3)
+        )
         
         self.next_slide()
-
-        props1 = Tex("Concentration de boules rouges :",
-                    tex_template=tex_template,
-                    tex_to_color_map={"rouges": RED})
-        props2 = MathTex(r"c = \dfrac{\ell}{N}", font_size=48,
-                         tex_to_color_map={r"\ell": RED, "N": PURPLE})
-        props3 = MathTex(fr"= \dfrac{{{ell_num}}}{{{ell_num+k_num}}}",
-                         font_size=48,
-                         tex_to_color_map={
-                             str(ell_num): RED,
-                             str(ell_num+k_num): PURPLE
-                         })
         
-        props = VGroup()
+        bullets.generate_target()
+        bullets.target.set_x(bullets.get_center()[0])
+        bullets.target.set_y(bullets.get_center()[1])
+
+        bullets.target.shift(LEFT * 0.5)
+
+        # c.next_to(bullets.target[0], RIGHT, buff=0.8)
+
+
+        self.play(
+            MoveToTarget(bullets),
+            FadeOut(props1),
+            VGroup(math_gp, props23).animate.next_to(bullets.target[0], RIGHT, buff=0.8)
+        )
+        # self.play(Transform(b4, ))
+
+        self.next_slide()
+
+        N = k_num + ell_num
+        c = k_num / N
+        E = 1 / c
+
+        expect1 = Tex("Nombre moyen de tirages avant succès :",
+                        tex_template=tex_template,
+                        )
+        expect2 = MathTex(
+            "E(",
+            "c",
+            ") =",
+            r"\dfrac{1}{",
+            "c",
+            "}",
+            font_size=48
+        )
+        expect3 = MathTex(
+            "E(",
+            f"{c:.2f}",
+            ") =",
+            f"{(1 / c):.0f}",
+            font_size = 48
+        )
+
+        exp_gp = VGroup(expect1, expect2).arrange(DOWN, buff=0.12).move_to(DOWN * 1.5)
+        expect3.move_to(expect2, aligned_edge=LEFT)
+
+        self.play(Write(exp_gp))
+
+        self.next_slide()
+
+        self.play(
+            ReplacementTransform(expect2[0], expect3[0]),
+            ReplacementTransform(expect2[1], expect3[1]),
+            ReplacementTransform(expect2[2], expect3[2]), 
+            FadeOut(VGroup(expect2[3], expect2[4], expect2[5]), shift=UP*0.3),
+            FadeIn(expect3[3], shift=UP*0.3)
+        )
+
+        self.next_slide()
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+        box_w = 5.5
+        box_h = 3.5
+        center = RIGHT * 1.5
+        half_w, half_h = box_w / 2, box_h / 2
+        
+        top_left     = center + np.array([-half_w,  half_h, 0])
+        bottom_left  = center + np.array([-half_w, -half_h, 0])
+        bottom_right = center + np.array([ half_w, -half_h, 0])
+        top_right    = center + np.array([ half_w,  half_h, 0])
+
+        left_line   = Line(top_left, bottom_left, stroke_width=3, color=WHITE)
+        bottom_line = Line(bottom_left, bottom_right, stroke_width=3, color=WHITE)
+        right_line  = Line(bottom_right, top_right, stroke_width=3, color=WHITE)
+
+        open_box = VGroup(left_line, bottom_line, right_line)
+        self.play(Wait(0.5))
+        self.play(Create(open_box))
+
+        box_top_y = top_left[1]
+        box_bot_y = bottom_left[1]
+        left_x = top_left[0]
+        right_x = top_right[0]
+
+        self.next_slide()
+
+        k_tracker = ValueTracker(0)
+        ell_tracker = ValueTracker(0)
+        self.add(k_tracker, ell_tracker)
+        
+        # --- Top Text: k, ell, N ---
+        left_k = VGroup(MathTex("k =", tex_to_color_map={"k": BLUE}), Integer(0, color=BLUE)).arrange(RIGHT)
+        left_k[1].add_updater(lambda m: m.set_value(k_tracker.get_value()).next_to(left_k[0], RIGHT, buff=0.2))
+        
+        left_ell = VGroup(MathTex(r"\ell =", tex_to_color_map={r"\ell": RED}), Integer(0, color=RED)).arrange(RIGHT)
+        left_ell[1].add_updater(lambda m: m.set_value(int(ell_tracker.get_value())).next_to(left_ell[0], RIGHT, buff=0.2))
+        
+        left_N = VGroup(MathTex("N =", tex_to_color_map={"N": PURPLE}), Integer(0, color=PURPLE)).arrange(RIGHT)
+        left_N[1].add_updater(lambda m: m.set_value(int(k_tracker.get_value() + ell_tracker.get_value())).next_to(left_N[0], RIGHT, buff=0.2))
+        
+        # Arrange horizontally on top
+        left_stats = VGroup(left_k, left_ell, left_N).arrange(DOWN, aligned_edge=LEFT, buff=0.3).next_to(open_box, LEFT, buff=1)
+
+        # --- Bottom Text: c, E(c) ---
+        bot_c = VGroup(MathTex("c ="), DecimalNumber(0, num_decimal_places=4)).arrange(RIGHT)
+        bot_c[1].add_updater(lambda m: m.set_value(
+            k_tracker.get_value() / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
+        ).next_to(bot_c[0], RIGHT, buff=0.2))
+
+        bot_E = VGroup(MathTex("E(c) ="), DecimalNumber(0, num_decimal_places=0)).arrange(RIGHT)
+        bot_E[1].add_updater(lambda m: m.set_value(
+            (k_tracker.get_value() + ell_tracker.get_value()) / max(0.001, k_tracker.get_value())
+        ).next_to(bot_E[0], RIGHT, buff=0.2))
+
+        # The bottom stats remain horizontally arranged under the box
+        bot_stats = VGroup(bot_c, bot_E).arrange(RIGHT, buff=2).next_to(open_box, DOWN, buff=0.5)
+
+        # Helper to animate trajectories
+        def traj_updater(traj):
+            L = len(traj)
+            def updater(mob, alpha):
+                t = alpha * (L - 1)
+                i0 = int(t)
+                i1 = min(i0 + 1, L - 1)
+                f = t - i0
+                p = traj[i0] * (1 - f) + traj[i1] * f
+                mob.move_to(np.array([p[0], p[1], 0]))
+            return updater
+
+        b_trajs, b_final, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
+        r_trajs, r_final, _ = simulate_settling([random.uniform(0, 1)], ball_r, left_x, right_x, box_bot_y, box_top_y, fixed_obstacles=b_final)
+        
+        b0_balls = VGroup(
+            make_circle(BLUE).move_to(np.array([b_trajs[0][0][0], b_trajs[0][0][1], 0])), 
+            make_circle(RED).move_to(np.array([r_trajs[0][0][0], r_trajs[0][0][1], 0]))
+        )
+        
+        # Fade in high above
+        self.play(FadeIn(b0_balls, shift=DOWN * 0.5))
+        
+        # Let them fall
+        self.play(
+            UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs[0])),
+            UpdateFromAlphaFunc(b0_balls[1], traj_updater(r_trajs[0])),
+            run_time=1.5
+        )
+        
+        # Accumulate fixed obstacles for the physics engine
+        fixed_obstacles = b_final + r_final
+
+        # 4 & 5) Display the counters and snap them to 1
+        k_tracker.set_value(1)
+        ell_tracker.set_value(1)
+        self.play(Write(left_stats), Write(bot_stats))
+
+        self.next_slide()
+
+        batches = [1, 1, 7, 40, 150]
+        
+        for batch_size in batches:
+            
+            # Spread spawn positions randomly across the top
+            xs = [random.uniform(left_x + ball_r, right_x - ball_r) for _ in range(batch_size)]
+            
+            # Simulate physics using the previous balls as solid obstacles
+            trajs, final, sim_time = simulate_settling(
+                xs, ball_r, left_x, right_x, box_bot_y, box_top_y, 
+                fixed_obstacles=fixed_obstacles
+            )
+            
+            # Create the Mobjects exactly where the trajectory says they start
+            batch_balls = VGroup(*[
+                make_circle(RED).move_to(np.array([trajs[i][0][0], trajs[i][0][1], 0])) 
+                for i in range(batch_size)
+            ])
+            
+            # Fade them all in as a cloud above the box
+            self.play(FadeIn(batch_balls, shift=DOWN * 0.2), run_time=0.5)
+            
+            # --- THE MAGIC COUNTING THRESHOLD ---
+            # This updater checks the Y coordinate of every ball.
+            # If it drops below the top line of the box, it counts as "in"!
+            base_ell = ell_tracker.get_value()
+            def counter_updater(tracker, balls=batch_balls, base=base_ell):
+                dropped_in = sum(1 for b in balls if b.get_y() < box_top_y)
+                tracker.set_value(base + dropped_in)
+                
+            ell_tracker.add_updater(counter_updater)
+            
+            # Animate the trajectories
+            anims = [UpdateFromAlphaFunc(batch_balls[i], traj_updater(trajs[i])) for i in range(batch_size)]
+            
+            # Dynamic scaling: large batches lag less and fall faster
+            lag = max(0.01, 0.3 / math.sqrt(batch_size)) 
+            rt = max(0.5, sim_time * 0.5)
+            
+            self.play(LaggedStart(*anims, lag_ratio=lag), run_time=rt)
+            
+            # Cleanup the updater and force the final exact value just to be safe
+            ell_tracker.remove_updater(counter_updater)
+            ell_tracker.set_value(base_ell + batch_size)
+            
+            # Add the newly settled balls to the solid obstacles list for the next batch
+            fixed_obstacles.extend(final)
+            self.play(Wait(0.1))
+            self.next_slide()
+
+            # TODO: Changer le lag_ratio et ordonner la chute des boules par ordonnées croissantes #
