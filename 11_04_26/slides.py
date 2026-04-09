@@ -22,28 +22,39 @@ class RareEarths(Slide):
         tex_template.add_to_preamble(r"\usepackage{xcolor}")
 
         # params
-        k_num = 39
-        ell_num = 11
+        k_num = 9
+        ell_num = 1
         ball_r = 0.17
         padding = 0.06
 
         # lines (one-by-one)
-        b1 = Tex(r"$k$ : Nombre de billes bleues",
-                tex_template=tex_template,
-                tex_to_color_map={r"$k$": BLUE, "bleues": BLUE})
+        k_tex = MathTex("k", font_size=48).set_color(BLUE)
+        b1_text = Tex(": Nombre de billes bleues",
+                    tex_template=tex_template,
+                    tex_to_color_map={"bleues": BLUE})
+        b1 = VGroup(k_tex, b1_text).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
 
-        b2 = Tex(r"$\ell$ : Nombre de billes rouges",
-                tex_template=tex_template,
-                tex_to_color_map={r"$\ell$": RED, "rouges": RED})
+        ell_tex = MathTex(r"\ell", font_size=48).set_color(RED)
+        b2_text = Tex(": Nombre de billes rouges",
+                    tex_template=tex_template,
+                    tex_to_color_map={"rouges": RED})
+        b2 = VGroup(ell_tex, b2_text).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
         
-        b3_math = MathTex("N", "=", "k", "+", r"\ell", font_size=48)
-        
-        b3_math[0].set_color(PURPLE)  # "N"
-        b3_math[2].set_color(BLUE)    # "k"
-        b3_math[4].set_color(RED)     # "\ell"
+        b3_f1 = MathTex("N", font_size=48).set_color(PURPLE)
+        b3_f2 = MathTex("=", font_size=48)
+        b3_f3 = MathTex("k", font_size=48).set_color(BLUE)
+        b3_f4  = MathTex("+", font_size=48)
+        b3_f5 = MathTex(r"\ell", font_size=48).set_color(RED)
 
-        b3_text = Tex(": Nombre total de billes", tex_template=tex_template, tex_to_color_map={"total": PURPLE})
-        b3 = VGroup(b3_math, b3_text).arrange(RIGHT, aligned_edge=DOWN, buff=0.12)
+        b3_text = Tex(": Nombre total de billes",
+                    tex_template=tex_template,
+                    tex_to_color_map={"total": PURPLE})
+        
+        b3_unchanged = VGroup(b3_f1, b3_f2).arrange(RIGHT, buff=0.12)
+        
+        b3_transformed = VGroup(b3_f3, b3_f4, b3_f5, b3_text).arrange(RIGHT, buff=0.12)
+
+        b3 = VGroup(b3_unchanged, b3_transformed).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
 
         bullets = VGroup(b1, b2, b3).arrange(DOWN, aligned_edge=LEFT, buff=0.28).to_edge(LEFT, buff=0.6)
 
@@ -268,6 +279,8 @@ class RareEarths(Slide):
             c = make_circle(RED).move_to(np.array([start[0], start[1], 0]))
             red_balls.add(c)
 
+        red_final_positions = [np.array(p) for p in red_final]
+
         # red_anims = [UpdateFromAlphaFunc(red_balls[i], traj_updater(red_trajs[i])) for i in range(len(red_balls))]
         # self.play(LaggedStart(*red_anims, lag_ratio=0.02), run_time=max(0.4, red_sim_time))
         # self.next_slide()
@@ -277,8 +290,8 @@ class RareEarths(Slide):
         self.next_slide()
 
         # prepare trackers + updaters
-        trackers = [ValueTracker(0.0) for _ in range(len(blue_balls))]
-        Ls = [len(traj) for traj in blue_trajs]
+        trackers_b, trackers_r = [ValueTracker(0.0) for _ in range(len(blue_balls))], [ValueTracker(0.0) for _ in range(len(red_balls))]
+        Ls_b, Ls_r = [len(traj) for traj in blue_trajs], [len(traj) for traj in red_trajs]
 
         def make_tracker_updater(traj, tracker, L):
             def updater(mob):
@@ -291,19 +304,21 @@ class RareEarths(Slide):
             return updater
 
         for i, mob in enumerate(blue_balls):
-            mob.add_updater(make_tracker_updater(blue_trajs[i], trackers[i], Ls[i]))
+            mob.add_updater(make_tracker_updater(blue_trajs[i], trackers_b[i], Ls_b[i]))
+        for i, mob in enumerate(red_balls):
+            mob.add_updater(make_tracker_updater(red_trajs[i], trackers_r[i], Ls_r[i]))
 
-        n = len(blue_balls)
-        single_run = blue_sim_time
+        nb, nr = len(blue_balls), len(red_balls)
+        single_run_b, single_run_r = blue_sim_time, red_sim_time
         fade_time = 0.6
         write_time = 1.6
         lag_ratio = 0.05
 
-        initial_ys = [blue_trajs[i][0][1] for i in range(n)]
-        order = sorted(range(n), key=lambda i: initial_ys[i])  # ascending => lowest first
+        initial_ys_b, initial_ys_r = [blue_trajs[i][0][1] for i in range(nb)], [red_trajs[i][0][1] for i in range(nr)]
+        order_b, order_r = sorted(range(nb), key=lambda i: initial_ys_b[i]), sorted(range(nr), key=lambda i: initial_ys_r[i])
 
         # Build ordered tracker animations and play
-        ordered_anims = [trackers[i].animate.set_value(1.0) for i in order]
+        ordered_anims_b, ordered_anims_r = [trackers_b[i].animate.set_value(1.0) for i in order_b], [trackers_r[i].animate.set_value(1.0) for i in order_r]
 
         # run Write + FadeIn first, then animate trackers (no Succession nesting)
         self.play(
@@ -311,7 +326,7 @@ class RareEarths(Slide):
             FadeIn(blue_balls, run_time=fade_time),
             Succession(
                 Wait(fade_time),
-                LaggedStart(*ordered_anims, lag_ratio=lag_ratio, run_time=single_run)
+                LaggedStart(*ordered_anims_b, lag_ratio=lag_ratio, run_time=single_run_b)
                 )
             )
 
@@ -328,36 +343,94 @@ class RareEarths(Slide):
 
         self.next_slide()
 
-        # reveal second line and handle red balls the same way
-        self.play(Write(b2), FadeIn(red_balls))
-        red_anims = [UpdateFromAlphaFunc(red_balls[i], traj_updater(red_trajs[i]))
-                    for i in range(len(red_balls))]
-        self.play(*red_anims, run_time=max(0.4, red_sim_time))
+        self.play(
+            Write(b2, run_time=write_time),
+            FadeIn(red_balls, run_time=fade_time),
+            Succession(
+                Wait(fade_time),
+                LaggedStart(*ordered_anims_r, lag_ratio=lag_ratio, run_time=single_run_r)
+                )
+            )
+        
+        static_red = VGroup()
+        for p in red_final_positions:
+            c = make_circle(RED).move_to(np.array([p[0], p[1], 0]))
+            static_red.add(c)
+        self.add(static_red)
+        for m in red_balls:
+            m.clear_updaters()
+        self.remove(red_balls)
+        red_balls = static_red
+
         self.next_slide()
 
         # reveal total
         self.play(Write(b3))
         self.next_slide()
 
-        bb1 = MathTex("k", "=", f"{k_num}", font_size=48)
-        bb1[0].set_color(BLUE)
-        bb1[2].set_color(BLUE)
-        bb1[0].move_to(b1[0].get_center())
-        bb1[1:].next_to(bb1[0], RIGHT, buff=0.12)
+        bb1 = MathTex("=", f"{k_num}", font_size=48)
+        bb1[0].set_color(WHITE)      # "="
+        bb1[1].set_color(BLUE)       # k 
+        bb1.next_to(k_tex, RIGHT, buff=0.12)
+        bb1.align_to(b1_text, DOWN)  # match baseline with the old text
+        bb1.set_opacity(0)
+        self.add(bb1)
 
-        bb2 = MathTex(r"\ell", "=", f"{ell_num}", font_size=48)
-        bb2[0].set_color(RED)
-        bb2[2].set_color(RED)
-        bb2.align_to(b2, LEFT)
-        bb2.move_to(b2.get_center())
+        bb2 = MathTex("=", f"{ell_num}", font_size=48)
+        bb2[0].set_color(WHITE)      # "="
+        bb2[1].set_color(RED)       # ell 
+        bb2.next_to(ell_tex, RIGHT, buff=0.12)
+        bb2.align_to(b2_text, DOWN)  # match baseline with the old text
+        bb2.set_opacity(0)
+        self.add(bb2)
 
-        bb3 = MathTex("N", "=", f"{k_num+ell_num}", font_size=48)
-        bb3[0].set_color(PURPLE)
-        bb3[2].set_color(PURPLE)
-        bb3.align_to(b3, LEFT)
-        bb3.move_to(b3.get_center())
+        bb3 = MathTex(f"{k_num + ell_num}", font_size=48)
+        bb3[0].set_color(PURPLE)      # k+ell
+        bb3.next_to(b3_unchanged, RIGHT, buff=0.12)
+        bb3.align_to(b3_transformed, DOWN)  # match baseline with the old text
+        bb3.set_opacity(0)
+        self.add(bb3)
 
-        self.play(TransformMatchingTex(b1, bb1))
-        self.play(LaggedStart(TransformMatchingTex(b2, bb2), lag_ratio=0.02))
-        self.play(LaggedStart(TransformMatchingTex(b3, bb3), lag_ratio=0.04))
+        self.play(
+            ReplacementTransform(b1_text, bb1),
+            bb1.animate.set_opacity(1.0)
+                  )
+        self.play(
+            ReplacementTransform(b2_text, bb2),
+            bb2.animate.set_opacity(1.0)
+                  )
+        self.play(
+            ReplacementTransform(b3_transformed, bb3),
+            bb3.animate.set_opacity(1.0)
+                  )
         self.next_slide()
+
+        box_group = VGroup(open_box, static_blue, static_red)
+        box_group.generate_target()
+        box_group.target.to_edge(UP, buff=0.6)
+
+        bullets.generate_target()
+        bullets.target.to_edge(UP, buff=0.6)
+        bullets.target.set_x(-config["frame_width"] / 4)
+        bullets.target.set_y(box_group.target.get_center()[1])
+
+        self.play(
+            MoveToTarget(box_group),
+            MoveToTarget(bullets)
+        )
+        
+        self.next_slide()
+
+        props1 = Tex("Concentration de boules rouges :",
+                    tex_template=tex_template,
+                    tex_to_color_map={"rouges": RED})
+        props2 = MathTex(r"c = \dfrac{\ell}{N}", font_size=48,
+                         tex_to_color_map={r"\ell": RED, "N": PURPLE})
+        props3 = MathTex(fr"= \dfrac{{{ell_num}}}{{{ell_num+k_num}}}",
+                         font_size=48,
+                         tex_to_color_map={
+                             str(ell_num): RED,
+                             str(ell_num+k_num): PURPLE
+                         })
+        
+        props = VGroup()
