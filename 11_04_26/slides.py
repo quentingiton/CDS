@@ -118,7 +118,7 @@ class RareEarths(Slide):
             return xs
 
         def simulate_settling(xs, ball_r, left_x, right_x, bottom_y, top_y, fixed_obstacles=None,
-                            g=9.8, dt=1/60, max_time=4.0, restitution=0.25):
+                            g=9, dt=1/60, max_time=4.0, restitution=0.25):
             n = len(xs)
             pos = np.array([[x, top_y + random.uniform(0.8, 1.6)] for x in xs], dtype=float)
             vel = np.zeros((n, 2), dtype=float)
@@ -229,6 +229,7 @@ class RareEarths(Slide):
             blue_xs, ball_r, box_left[0], box_right[0], box_bottom[1], box_top[1], fixed_obstacles=None
         )
 
+
         # create blue circles and animate along precomputed trajectories
         blue_balls = VGroup()
         for i, x in enumerate(blue_xs):
@@ -275,20 +276,88 @@ class RareEarths(Slide):
         self.play(Create(open_box))
         self.next_slide()
 
-        # reveal first line and make blue balls appear, then animate their fall
-        self.play(Write(b1), FadeIn(blue_balls))
-        blue_anims = [UpdateFromAlphaFunc(blue_balls[i], traj_updater(blue_trajs[i]))
-                    for i in range(len(blue_balls))]
-        self.play(LaggedStart(*blue_anims, lag_ratio=0.02), run_time=max(0.4, blue_sim_time))
+        # prepare trackers + updaters
+        trackers = [ValueTracker(0.0) for _ in range(len(blue_balls))]
+        Ls = [len(traj) for traj in blue_trajs]
+
+        def make_tracker_updater(traj, tracker, L):
+            def updater(mob):
+                t = tracker.get_value() * (L - 1)
+                i0 = int(t)
+                i1 = min(i0 + 1, L - 1)
+                f = t - i0
+                p = traj[i0] * (1 - f) + traj[i1] * f
+                mob.move_to(np.array([p[0], p[1], 0]))
+            return updater
+
+        for i, mob in enumerate(blue_balls):
+            mob.add_updater(make_tracker_updater(blue_trajs[i], trackers[i], Ls[i]))
+
+        n = len(blue_balls)
+        single_run = blue_sim_time
+        fade_time = 0.6
+        write_time = 1.6
+        lag_ratio = 0.05
+
+        initial_ys = [blue_trajs[i][0][1] for i in range(n)]
+        order = sorted(range(n), key=lambda i: initial_ys[i])  # ascending => lowest first
+
+        # Build ordered tracker animations and play
+        ordered_anims = [trackers[i].animate.set_value(1.0) for i in order]
+
+        # run Write + FadeIn first, then animate trackers (no Succession nesting)
+        self.play(
+            Write(b1, run_time=write_time),
+            FadeIn(blue_balls, run_time=fade_time),
+            Succession(
+                Wait(fade_time),
+                LaggedStart(*ordered_anims, lag_ratio=lag_ratio, run_time=single_run)
+                )
+            )
+
+        # finalize: place static copies and remove updaters
+        static_blue = VGroup()
+        for p in blue_final_positions:
+            c = make_circle(BLUE).move_to(np.array([p[0], p[1], 0]))
+            static_blue.add(c)
+        self.add(static_blue)
+        for m in blue_balls:
+            m.clear_updaters()
+        self.remove(blue_balls)
+        blue_balls = static_blue
+
         self.next_slide()
 
         # reveal second line and handle red balls the same way
         self.play(Write(b2), FadeIn(red_balls))
         red_anims = [UpdateFromAlphaFunc(red_balls[i], traj_updater(red_trajs[i]))
                     for i in range(len(red_balls))]
-        self.play(LaggedStart(*red_anims, lag_ratio=0.02), run_time=max(0.4, red_sim_time))
+        self.play(*red_anims, run_time=max(0.4, red_sim_time))
         self.next_slide()
 
         # reveal total
         self.play(Write(b3))
+        self.next_slide()
+
+        bb1 = MathTex("k", "=", f"{k_num}", font_size=48)
+        bb1[0].set_color(BLUE)
+        bb1[2].set_color(BLUE)
+        bb1[0].move_to(b1[0].get_center())
+        bb1[1:].next_to(bb1[0], RIGHT, buff=0.12)
+
+        bb2 = MathTex(r"\ell", "=", f"{ell_num}", font_size=48)
+        bb2[0].set_color(RED)
+        bb2[2].set_color(RED)
+        bb2.align_to(b2, LEFT)
+        bb2.move_to(b2.get_center())
+
+        bb3 = MathTex("N", "=", f"{k_num+ell_num}", font_size=48)
+        bb3[0].set_color(PURPLE)
+        bb3[2].set_color(PURPLE)
+        bb3.align_to(b3, LEFT)
+        bb3.move_to(b3.get_center())
+
+        self.play(TransformMatchingTex(b1, bb1))
+        self.play(LaggedStart(TransformMatchingTex(b2, bb2), lag_ratio=0.02))
+        self.play(LaggedStart(TransformMatchingTex(b3, bb3), lag_ratio=0.04))
         self.next_slide()
