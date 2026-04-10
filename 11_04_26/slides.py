@@ -415,7 +415,7 @@ class RareEarths(Slide):
         # self.add(bb3)
 
         self.play(
-            LaggedStart(*[Transform(b1_text, bb1), Transform(b2_text, bb2), Transform(b3_transformed, bb3)], lag_ratio=1)
+            LaggedStart(*[Transform(b1_text, bb1), Transform(b2_text, bb2), Transform(b3_transformed, bb3)], lag_ratio=0.7)
                   )
         self.next_slide()
 
@@ -628,13 +628,22 @@ class RareEarths(Slide):
                 mob.move_to(np.array([p[0], p[1], 0]))
             return updater
 
-        b_trajs1, b_final1, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
-        b_trajs2, b_final2, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
-        r_trajs, r_final, _ = simulate_settling([random.uniform(0, 1)], ball_r, left_x, right_x, box_bot_y, box_top_y, fixed_obstacles=b_final1+b_final2)
+        b_trajs, b_final, _ = simulate_settling(
+            [random.uniform(-1, -0.4), random.uniform(-0.4, 0.2)], # Spread their start positions slightly
+            ball_r, left_x, right_x, box_bot_y, box_top_y
+        )
         
+        # 2. Simulate the red ball, using BOTH blue balls as fixed obstacles
+        r_trajs, r_final, _ = simulate_settling(
+            [random.uniform(0.5, 1)], 
+            ball_r, left_x, right_x, box_bot_y, box_top_y, 
+            fixed_obstacles=b_final
+        )
+        
+        # 3. Create the 3 Mobjects
         b0_balls = VGroup(
-            make_circle(BLUE).move_to(np.array([b_trajs1[0][0][0], b_trajs1[0][0][1], 0])),
-            make_circle(BLUE).move_to(np.array([b_trajs2[0][0][0], b_trajs2[0][0][1], 0])), 
+            make_circle(BLUE).move_to(np.array([b_trajs[0][0][0], b_trajs[0][0][1], 0])),
+            make_circle(BLUE).move_to(np.array([b_trajs[1][0][0], b_trajs[1][0][1], 0])), 
             make_circle(RED).move_to(np.array([r_trajs[0][0][0], r_trajs[0][0][1], 0]))
         )
         
@@ -643,23 +652,23 @@ class RareEarths(Slide):
         
         # Let them fall
         self.play(
-            UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs1[0])),
-            UpdateFromAlphaFunc(b0_balls[1], traj_updater(b_trajs2[0])),
+            UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs[0])),
+            UpdateFromAlphaFunc(b0_balls[1], traj_updater(b_trajs[1])),
             UpdateFromAlphaFunc(b0_balls[2], traj_updater(r_trajs[0])),
             run_time=1.5
         )
         
-        # Accumulate fixed obstacles for the physics engine
-        fixed_obstacles = b_final1 + b_final2 + r_final
+        # Accumulate ALL fixed obstacles for the 207-ball drop
+        fixed_obstacles = b_final + r_final
 
-        # 4 & 5) Display the counters and snap them to 1
-        k_tracker.set_value(1)
+        # 4 & 5) Display the counters
+        k_tracker.set_value(2)
         ell_tracker.set_value(1)
         self.play(Write(left_stats), Write(bot_stats))
 
         self.next_slide()
 
-        total_remaining = 207
+        total_remaining = 200
         manual_count = 5
         
         # 1. Generate all random X positions
@@ -739,14 +748,46 @@ class RareEarths(Slide):
 
         k_start = 47
         ell_fixed = 103
-        k_tracker.set_value(0)
-        ell_tracker.set_value(0)
+        
         etot_tracker = ValueTracker(0)
         self.add(etot_tracker)
 
+        # 1. Clear all updaters so the geometry stays locked during the animation
+        left_k[1].clear_updaters()
+        left_ell[1].clear_updaters()
+        left_N[1].clear_updaters()
+        bot_c[1].clear_updaters()
+        bot_E[1].clear_updaters()
+
+        # 2. Safely snap their values to 0
+        left_k[1].set_value(0)
+        left_ell[1].set_value(0)
+        left_N[1].set_value(0)
+        bot_c[1].set_value(0)
+        bot_E[1].set_value(0)
+
+        # 3. Perform the move and scale safely!
         self.play(
-            VGroup(left_stats, VGroup(open_box, bot_stats)).animate.to_edge(UP, buff=0.6).scale(scale_f)
+            VGroup(left_stats, VGroup(open_box, bot_stats)).animate.to_edge(UP, buff=1).scale(scale_f)
         )
+
+        # 4. Sync the trackers to 0
+        k_tracker.set_value(0)
+        ell_tracker.set_value(0)
+
+        # 5. Re-attach the updaters 
+        # (Notice the buff is multiplied by scale_f so the spacing shrinks proportionally)
+        left_k[1].add_updater(lambda m: m.set_value(k_tracker.get_value()).next_to(left_k[0], RIGHT, buff=0.2 * scale_f))
+        left_ell[1].add_updater(lambda m: m.set_value(int(ell_tracker.get_value())).next_to(left_ell[0], RIGHT, buff=0.2 * scale_f))
+        left_N[1].add_updater(lambda m: m.set_value(int(k_tracker.get_value() + ell_tracker.get_value())).next_to(left_N[0], RIGHT, buff=0.2 * scale_f))
+
+        bot_c[1].add_updater(lambda m: m.set_value(
+            k_tracker.get_value() / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
+        ).next_to(bot_c[0], RIGHT, buff=0.2 * scale_f))
+
+        bot_E[1].add_updater(lambda m: m.set_value(
+            (k_tracker.get_value() + ell_tracker.get_value()) / max(1.0, k_tracker.get_value())
+        ).next_to(bot_E[0], RIGHT, buff=0.2 * scale_f))
 
         box_top_y = open_box.get_top()[1]
         box_bot_y = open_box.get_bottom()[1]
@@ -834,24 +875,369 @@ class RareEarths(Slide):
 
             ball_to_extract = refill_balls[idx]
 
-            rt = max(0.15, 0.6 * (0.90 ** step))
+            rt = 0.35
 
-            self.play(
-                ball_to_extract.animate.move_to(UP * 5).set_opacity(0),
-                k_tracker.animate.set_value(curr_k - 1),
-                etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
-                run_time=rt,
-                rate_func=linear
-            )
+            start_pos = ball_to_extract.get_center()
+            target_pos = start_pos + UP * 7
+
+            # 2. Create a custom updater for the extraction
+            def extract_updater(mob, alpha):
+                # A. Move linearly towards the target
+                mob.move_to(start_pos * (1 - alpha) + target_pos * alpha)
+                
+                # B. Delay the fade! 
+                # (The ball stays fully visible for the first 60% of the trip)
+                if alpha < 0.8:
+                    mob.set_opacity(1.0)
+                else:
+                    # Fade from 1 to 0 during the remaining 40% of the trip
+                    fade_progress = (alpha - 0.8) / 0.2 
+                    mob.set_opacity(1.0 - fade_progress)
+
+            temp_E = DecimalNumber(energy_increment, num_decimal_places=2, color=YELLOW, font_size=48).move_to(bot_E[1])
+            self.add(temp_E)
+
+            # 3. Play the animations safely
+            if curr_k == 1:
+                bot_E[1].clear_updaters()
+                infty_symbol = MathTex(r"\infty", font_size=48).next_to(bot_E[0], RIGHT, buff=0.2 * scale_f)
+                
+                self.play(
+                    UpdateFromAlphaFunc(ball_to_extract, extract_updater),
+                    k_tracker.animate.set_value(curr_k - 1),
+                    ReplacementTransform(bot_E[1], infty_symbol),
+                    # Fly the temp number to the total and fade it!
+                    temp_E.animate.move_to(etot_num).set_opacity(0),
+                    etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
+                    run_time=rt
+                )
+            else:
+                self.play(
+                    UpdateFromAlphaFunc(ball_to_extract, extract_updater),
+                    k_tracker.animate.set_value(curr_k - 1),
+                    # Fly the temp number to the total and fade it!
+                    temp_E.animate.move_to(etot_num).set_opacity(0),
+                    etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
+                    run_time=rt
+                )
+            
+            self.remove(temp_E) # Clean up the invisible floating number
 
             if step < 3:
                 self.wait(0.2)
                 self.next_slide()
 
-        bot_E[1].clear_updaters()
-        infty_symbol = MathTex(r"\infty", font_size=48).next_to(bot_E[0], RIGHT, buff=0.2)
+        self.wait(1)
+        self.next_slide()
 
-        self.play(ReplacementTransform(bot_E[1], infty_symbol))
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+        # 1. Create the Axes
+        ax = Axes(
+            x_range=[0, 1.1, 0.2],
+            y_range=[0, 0.8, 0.2],
+            x_length=8,
+            y_length=5,
+            axis_config={"include_numbers": False},
+            x_axis_config={"numbers_to_include": [0, 0.5, 1]},
+            tips=False
+        ).move_to(DOWN * 0.5)
+
+        x_label = ax.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
+        y_label = ax.get_y_axis_label("H(c)", edge=UP, direction=UP, buff=0.2)
+        
+        self.play(Create(ax), Write(x_label), Write(y_label))
+
+        # 2. Define the Mixing Entropy Math
+        # Delta S = - (x*ln(x) + (1-x)*ln(1-x))
+        def entropy(x):
+            if x <= 0 or x >= 1: return 0
+            return - (x * math.log(x) + (1 - x) * math.log(1 - x))
+
+        curve = ax.plot(entropy, x_range=[0.00001, 0.999], color=WHITE, stroke_width=4)
+        
+        curve_label = MathTex(
+            r"= - \big[c \ln(c) + (1-c) \ln(1-c)\big]", 
+            color=WHITE
+        ).next_to(y_label, RIGHT, buff=-0.2).match_height(y_label)
+
+        self.play(Wait(0.5))
+        self.play(Create(curve), Write(curve_label))
+        self.next_slide()
+
+        # 3. Create the dynamically tracking Tangent Line
+        c_start = 0.34
+        c_tracker = ValueTracker(c_start) # Start in the middle of the mix
+        
+        # The moving dot
+        dot = always_redraw(lambda: Dot(
+            ax.c2p(c_tracker.get_value(), entropy(c_tracker.get_value())), 
+            color=YELLOW
+        ))
+
+        # The mathematical tangent line
+        def get_tangent(c):
+            if c < 0.00001: c = 0.00001
+            if c > 0.999: c = 0.999
+            
+            slope = math.log(1 - c) - math.log(c)
+            
+            # Define the line natively in the math grid!
+            # It spans 0.04 to the left and right, ensuring it always overhangs the 0.02 triangle.
+            margin = 0.04
+            p1 = ax.c2p(c - margin, entropy(c) - slope * margin)
+            p2 = ax.c2p(c + margin, entropy(c) + slope * margin)
+            
+            return Line(p1, p2, color=YELLOW, stroke_width=3)
+
+        tangent = always_redraw(lambda: get_tangent(c_tracker.get_value()))
+        
+        # Track the mathematical slope value on screen
+        # slope_text = always_redraw(lambda: MathTex(
+        #     fr"H'(c) \approx {math.log(1 - max(0.001, c_tracker.get_value())) - math.log(max(0.001, c_tracker.get_value())):.1f}",
+        #     font_size=40
+        # ).next_to(ax, RIGHT, buff=0.5).shift(UP))
+
+        slope_text = MathTex(
+            fr"H'(c) \approx  {math.log(1 - c_start) - math.log(c_start):.3f}",
+            font_size=40
+        ).next_to(dot, UL, buff=0.2)
+
+        # slope_text.add_updater(
+        #     lambda m: m.become(
+        #         MathTex(
+        #             fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {math.log(1 - max(0.00001, c_tracker.get_value())) - math.log(max(0.00001, c_tracker.get_value())):.1f}",
+        #             font_size=40
+        #         )
+        #     )
+        # )
+
+        self.play(FadeOut(curve_label))
+        self.play(FadeIn(dot), Create(tangent), Write(slope_text))
+        self.next_slide()
+
+        original_text_pos = slope_text.get_center()
+
+        # 1. Group the graph to scale it together
+        graph_group = VGroup(ax, curve, x_label, y_label, curve_label)
+        graph_group.save_state()
+        zoom_center = ax.c2p(c_start, entropy(c_start))
+        self.play(graph_group.animate.scale(8, about_point=zoom_center))
+        self.next_slide()
+
+        # 2. Draw the Triangle
+        dc = 0.02 
+        slope_val = math.log(1 - c_start) - math.log(c_start)
+
+        p_start_pt = ax.c2p(c_start, entropy(c_start)) # The dot
+        p_corner_pt = ax.c2p(c_start + dc, entropy(c_start)) # Right
+        p_end_pt = ax.c2p(c_start + dc, entropy(c_start) + slope_val * dc) # Right and Up
+
+        dx_line = Line(p_start_pt, p_corner_pt, color=BLUE, stroke_width=5)
+        dy_line = Line(p_corner_pt, p_end_pt, color=RED, stroke_width=5)
+
+        dx_label = MathTex(r"\delta c", color=BLUE).next_to(dx_line, DOWN, buff=0.15)
+        dy_label = MathTex(r"\delta H", color=RED).next_to(dy_line, RIGHT, buff=0.15)
+
+        self.play(Create(dx_line), Write(dx_label))
+        self.play(Create(dy_line), Write(dy_label))
+        self.next_slide()
+
+        slope_text_frac = MathTex(
+            fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {math.log(1 - c_start) - math.log(c_start):.3f}",
+            font_size=40,
+            tex_to_color_map={r"\delta H": RED, r"\delta c": BLUE}
+        ).move_to(slope_text.get_center())
+
+        self.play(ReplacementTransform(slope_text, slope_text_frac))
+        slope_text = slope_text_frac
+        self.next_slide()
+
+        def get_zoom_triangle(c):
+            slope_v = math.log(1 - c) - math.log(c)
+            p_start = ax.c2p(c, entropy(c))
+            p_corner = ax.c2p(c + dc, entropy(c))
+            p_end = ax.c2p(c + dc, entropy(c) + slope_v * dc)
+
+            dx_l = Line(p_start, p_corner, color=BLUE, stroke_width=5)
+            dy_l = Line(p_corner, p_end, color=RED, stroke_width=5)
+
+            dx_lab = MathTex(r"\delta c", color=BLUE).next_to(dx_l, DOWN, buff=0.15)
+            dy_lab = MathTex(r"\delta H", color=RED).next_to(p_corner, RIGHT, buff=0.15).shift(UP * 0.3)
+
+            return VGroup(dx_l, dy_l, dx_lab, dy_lab)
+        
+        triangle_group = VGroup()
+        self.add(triangle_group)
+
+        dot.clear_updaters()
+        slope_text.clear_updaters()
+        tangent.clear_updaters()
+
+        fixed_focus = np.copy(zoom_center)
+
+        def master_updater(mob):
+            c = max(0.00001, c_tracker.get_value())
+            
+            # A. Shift the graph FIRST
+            curr_pos = ax.c2p(c, entropy(c))
+            mob.shift(fixed_focus - curr_pos)
+            
+            # B. Now that the axes have moved, position everything perfectly!
+            
+            # The Dot (Locked to the camera focal point)
+            dot.move_to(ax.c2p(c, entropy(c)))
+            
+            # The Tangent Line
+            margin = 0.04
+            slope_v = math.log(1 - c) - math.log(c)
+            p1 = ax.c2p(c - margin, entropy(c) - slope_v * margin)
+            p2 = ax.c2p(c + margin, entropy(c) + slope_v * margin)
+            tangent.become(Line(p1, p2, color=YELLOW, stroke_width=3))
+            
+            # The Triangle (On the RIGHT)
+            p_start = ax.c2p(c, entropy(c))
+            p_corner = ax.c2p(c + dc, entropy(c))
+            p_end = ax.c2p(c + dc, entropy(c) + slope_v * dc)
+            
+            dx_l = Line(p_start, p_corner, color=BLUE, stroke_width=5)
+            dy_l = Line(p_corner, p_end, color=RED, stroke_width=5)
+            
+            dx_lab = MathTex(r"\delta c", color=BLUE).next_to(dx_l, DOWN, buff=0.15)
+            dy_lab = MathTex(r"\delta H", color=RED).next_to(p_corner, RIGHT, buff=0.15).shift(UP * 0.3)
+            
+            triangle_group.become(VGroup(dx_l, dy_l, dx_lab, dy_lab))
+            
+            # The Text (Pinned to the Upper Left of the dot)
+            slope_text.become(
+                MathTex(
+                    fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {slope_v:.1f}",
+                    font_size=40,
+                    tex_to_color_map={r"\delta H": RED, r"\delta c": BLUE}
+                ).next_to(dot, UL, buff=0.4)
+            )
+
+        # def follow_dot(mob):
+        #     curr_pos = ax.c2p(c_tracker.get_value(), entropy(c_tracker.get_value()))
+        #     mob.shift(fixed_focus - curr_pos)
+
+        graph_group.add_updater(master_updater)
+
+        self.play(
+            c_tracker.animate.set_value(0.00001), 
+            run_time=6, 
+            rate_func=smooth
+        )
+
+        self.play(Wait(0.5))
+
+        slope_text.clear_updaters()
+        final_infty = MathTex(r"H'(c) \to \infty", font_size=48, color=RED).move_to(slope_text)
+        self.play(ReplacementTransform(slope_text, final_infty))
 
         self.wait(1)
+        
+        # # 7. Unzoom
+        # graph_group.remove_updater(follow_dot)
+
+        # # Fade out the persistent triangle as we restore the global view
+        # self.play(
+        #     Restore(graph_group),
+        #     FadeOut(triangle_group),
+        #     Wait(0.1),
+        #     final_infty.animate.move_to(original_text_pos)
+        # )
+        
+        # self.play(Wait(1))
+
+        self.next_slide()
+
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+        # 1. Left Axes: Zoomed Entropy Curve (x from 0 to 0.5)
+        ax_left = Axes(
+            x_range=[0, 0.55, 0.1],
+            y_range=[0, 0.8, 0.2],
+            x_length=5, y_length=5,
+            axis_config={"include_numbers": False},
+            tips=False
+        ).to_corner(DL, buff=1)
+
+        ax_left_x = ax_left.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
+        ax_left_y = ax_left.get_y_axis_label("H(c)", edge=UP, direction=UP, buff=0.2)
+        curve_left = ax_left.plot(entropy, x_range=[0.001, 0.5], color=WHITE)
+
+        # 2. Right Axes: Cost Curve (Derivative)
+        ax_right = Axes(
+            x_range=[0, 0.55, 0.1],
+            y_range=[0, 5, 1], # The cost derivative goes up to ~4.6 at c=0.01
+            x_length=5, y_length=5,
+            axis_config={"include_numbers": False},
+            tips=False
+        ).to_corner(DR, buff=1)
+
+        ax_right_x = ax_right.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
+        label_mob = MathTex(r"\delta H", r"\text{ (Energie)}")
+        label_mob[0].set_color(RED)
+        ax_right_y = ax_right.get_y_axis_label(label_mob, edge=UP, direction=UP, buff=0.2)
+
+        self.play(
+            Create(ax_left), Write(ax_left_x), Write(ax_left_y), Create(curve_left),
+            Create(ax_right), Write(ax_right_x), Write(ax_right_y)
+        )
+
+        # 3. Dynamic Tracking Elements
+        c_slide = ValueTracker(0.48)
+        dc = 0.05 # Triangle width
+
+        def get_triangle(c):
+            # Triangle points mapped to the left graph
+            p_start = ax_left.c2p(c + dc, entropy(c + dc))
+            p_corner = ax_left.c2p(c, entropy(c + dc))
+            p_end = ax_left.c2p(c, entropy(c))
+
+            dx_line = Line(p_start, p_corner, color=BLUE, stroke_width=5)
+            dy_line = Line(p_corner, p_end, color=RED, stroke_width=5)
+
+            # Labels that stick to the lines
+            dx_label = MathTex(r"\delta c", color=BLUE, font_size=30).next_to(dx_line, UP, buff=0.1)
+            dy_label = MathTex(r"\delta H", color=RED, font_size=30).next_to(dy_line, LEFT, buff=0.1)
+
+            return VGroup(dx_line, dy_line, dx_label, dy_label)
+        
+        triangle = always_redraw(lambda: get_triangle(c_slide.get_value()))
+
+        # The mathematical derivative for the right graph
+        def deriv_cost(x):
+            if x <= 0.001: x = 0.001
+            if x >= 0.999: x = 0.999
+            return math.log(1 - x) - math.log(x)
+
+        # The dot tracing the cost on the right graph
+        cost_dot = always_redraw(lambda: Dot(
+            ax_right.c2p(c_slide.get_value(), deriv_cost(c_slide.get_value())),
+            color=RED
+        ))
+
+        # Traced path logic: Draws the plot from the CURRENT c_value up to the STARTING c_value
+        cost_trace = always_redraw(lambda: ax_right.plot(
+            deriv_cost,
+            x_range=[c_slide.get_value(), 0.48],
+            color=RED, stroke_width=4
+        ))
+
+        self.next_slide()
+
+        self.play(FadeIn(triangle), FadeIn(cost_dot))
+        self.add(cost_trace) # Activates the ink trail
+
+        self.next_slide()
+
+        # 4. Slide to the left!
+        self.play(
+            c_slide.animate.set_value(0.01),
+            run_time=6, # Nice and slow so they can watch the trace
+            rate_func=linear
+        )
+        self.wait(2)
         self.next_slide()
