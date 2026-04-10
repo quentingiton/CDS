@@ -22,7 +22,7 @@ class RareEarths(Slide):
         tex_template.add_to_preamble(r"\usepackage{xcolor}")
 
         # params
-        k_num = 1
+        k_num = 2
         ell_num = 9
         ball_r = 0.17
         padding = 0.06
@@ -129,7 +129,7 @@ class RareEarths(Slide):
             return xs
 
         def simulate_settling(xs, ball_r, left_x, right_x, bottom_y, top_y, fixed_obstacles=None,
-                            g=9, dt=1/180, max_time=4.0, restitution=0.25):
+                            g=9, dt=1/60, max_time=4.0, restitution=0.25, collision_iters=3):
             n = len(xs)
             pos = np.array([[x, top_y + random.uniform(0.8, 1.6)] for x in xs], dtype=float)
             vel = np.zeros((n, 2), dtype=float)
@@ -160,60 +160,75 @@ class RareEarths(Slide):
                         vel[i,1] = -vel[i,1] * restitution
                         vel[i,0] *= 0.6
 
-                # dynamic-dynamic collisions (pairwise)
-                for i in range(n):
-                    for j in range(i+1, n):
-                        d = pos[j] - pos[i]
-                        dist = math.hypot(d[0], d[1])
-                        min_dist = 2 * ball_r
-                        if dist < 1e-8:
-                            # tiny jitter
-                            theta = random.random() * 2 * math.pi
-                            d = np.array([math.cos(theta), math.sin(theta)])
-                            dist = 1e-8
-                        overlap = min_dist - dist
-                        if overlap > 0:
-                            nrm = d / dist
-                            pos[i] -= nrm * overlap * 0.5
-                            pos[j] += nrm * overlap * 0.5
-                            rv = vel[j] - vel[i]
-                            vn = rv.dot(nrm)
-                            if vn < 0:
-                                J = -(1 + restitution) * vn / 2.0
-                                vel[i] -= J * nrm
-                                vel[j] += J * nrm
-
-                # collisions with fixed obstacles (treated as immobile circles)
-                if fixed_obstacles:
+                for _ in range(collision_iters):
+                    
+                    # A. Dynamic-dynamic collisions (pairwise)
                     for i in range(n):
-                        for sb in fixed_obstacles:
-                            d = pos[i] - sb
+                        for j in range(i+1, n):
+                            d = pos[j] - pos[i]
                             dist = math.hypot(d[0], d[1])
                             min_dist = 2 * ball_r
-                            if dist < 1e-8:
-                                d = np.array([0.0, 1.0])
-                                dist = 1e-8
-                            overlap = min_dist - dist
-                            if overlap > 0:
+                            
+                            if dist < min_dist: # Overlap detected!
+                                if dist < 1e-8:
+                                    theta = random.random() * 2 * math.pi
+                                    d = np.array([math.cos(theta), math.sin(theta)])
+                                    dist = 1e-8
+                                
+                                overlap = min_dist - dist
                                 nrm = d / dist
-                                pos[i] += nrm * overlap
-                                vn = vel[i].dot(nrm)
+                                
+                                # Push them apart mathematically
+                                pos[i] -= nrm * overlap * 0.6
+                                pos[j] += nrm * overlap * 0.6
+                                
+                                # Bounce velocity
+                                rv = vel[j] - vel[i]
+                                vn = rv.dot(nrm)
                                 if vn < 0:
-                                    J = -(1 + restitution) * vn
-                                    vel[i] += J * nrm
+                                    J = -(1 + restitution) * vn / 2.0
+                                    vel[i] -= J * nrm
+                                    vel[j] += J * nrm
 
-                for i in range(n):
-                    if pos[i,0] < left:
-                        pos[i,0] = left
-                    if pos[i,0] > right:
-                        pos[i,0] = right
-                    if pos[i,1] < bottom:
-                        pos[i,1] = bottom
+                    # B. Collisions with fixed obstacles
+                    if fixed_obstacles:
+                        for i in range(n):
+                            for sb in fixed_obstacles:
+                                d = pos[i] - sb
+                                dist = math.hypot(d[0], d[1])
+                                min_dist = 2 * ball_r
+                                
+                                if dist < min_dist: # Overlap detected!
+                                    if dist < 1e-8:
+                                        d = np.array([0.0, 1.0])
+                                        dist = 1e-8
+                                    
+                                    overlap = min_dist - dist
+                                    nrm = d / dist
+                                    
+                                    # Push the falling ball OUT of the static ball
+                                    pos[i] += nrm * overlap * 1.1
+                                    
+                                    # Bounce velocity
+                                    vn = vel[i].dot(nrm)
+                                    if vn < 0:
+                                        J = -(1 + restitution) * vn
+                                        vel[i] += J * nrm
+                    
+                    # C. Strict Boundary Clamp (Moved inside the iteration loop!)
+                    # If the balls pushing each other forced someone through the wall, 
+                    # this strictly snaps them back inside before the frame ends.
+                    for i in range(n):
+                        if pos[i,0] < left: pos[i,0] = left
+                        if pos[i,0] > right: pos[i,0] = right
+                        if pos[i,1] < bottom: pos[i,1] = bottom
 
+                # 2. Damping and History
                 vel *= 0.999  # small damping
                 for i in range(n):
                     trajs[i].append(pos[i].copy())
 
+                # 3. Check for stability
                 max_speed = np.max(np.linalg.norm(vel, axis=1))
                 max_overlap = 0
                 for i in range(n):
@@ -505,7 +520,7 @@ class RareEarths(Slide):
             "E(",
             f"{c:.2f}",
             ") =",
-            f"{(1 / c):.0f}",
+            f"{E:.2f}",
             font_size = 48
         )
 
@@ -528,8 +543,6 @@ class RareEarths(Slide):
 
         self.play(*[FadeOut(mob) for mob in self.mobjects])
 
-        box_w = 5.5
-        box_h = 3.5
         center = RIGHT * 1.5
         half_w, half_h = box_w / 2, box_h / 2
         
@@ -576,9 +589,9 @@ class RareEarths(Slide):
             k_tracker.get_value() / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
         ).next_to(bot_c[0], RIGHT, buff=0.2))
 
-        bot_E = VGroup(MathTex("E(c) ="), DecimalNumber(0, num_decimal_places=0)).arrange(RIGHT)
+        bot_E = VGroup(MathTex("E(c) ="), DecimalNumber(0, num_decimal_places=2)).arrange(RIGHT)
         bot_E[1].add_updater(lambda m: m.set_value(
-            (k_tracker.get_value() + ell_tracker.get_value()) / max(0.001, k_tracker.get_value())
+            (k_tracker.get_value() + ell_tracker.get_value()) / max(1.0, k_tracker.get_value())
         ).next_to(bot_E[0], RIGHT, buff=0.2))
 
         # The bottom stats remain horizontally arranged under the box
@@ -595,12 +608,33 @@ class RareEarths(Slide):
                 p = traj[i0] * (1 - f) + traj[i1] * f
                 mob.move_to(np.array([p[0], p[1], 0]))
             return updater
+        
+        def traj_and_fade_updater(traj):
+            L = len(traj)
+            final_pos = np.array([traj[-1][0], traj[-1][1], 0])
+            def updater(mob, alpha):
+                if alpha < 0.15: mob.set_opacity(alpha / 0.15)
+                else: mob.set_opacity(1.0)
+                
+                if alpha >= 0.999:
+                    mob.move_to(final_pos)
+                    return
+                
+                t = alpha * (L - 1)
+                i0 = int(t)
+                i1 = min(i0 + 1, L - 1)
+                f = t - i0
+                p = traj[i0] * (1 - f) + traj[i1] * f
+                mob.move_to(np.array([p[0], p[1], 0]))
+            return updater
 
-        b_trajs, b_final, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
-        r_trajs, r_final, _ = simulate_settling([random.uniform(0, 1)], ball_r, left_x, right_x, box_bot_y, box_top_y, fixed_obstacles=b_final)
+        b_trajs1, b_final1, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
+        b_trajs2, b_final2, _ = simulate_settling([random.uniform(-1, 0)], ball_r, left_x, right_x, box_bot_y, box_top_y)
+        r_trajs, r_final, _ = simulate_settling([random.uniform(0, 1)], ball_r, left_x, right_x, box_bot_y, box_top_y, fixed_obstacles=b_final1+b_final2)
         
         b0_balls = VGroup(
-            make_circle(BLUE).move_to(np.array([b_trajs[0][0][0], b_trajs[0][0][1], 0])), 
+            make_circle(BLUE).move_to(np.array([b_trajs1[0][0][0], b_trajs1[0][0][1], 0])),
+            make_circle(BLUE).move_to(np.array([b_trajs2[0][0][0], b_trajs2[0][0][1], 0])), 
             make_circle(RED).move_to(np.array([r_trajs[0][0][0], r_trajs[0][0][1], 0]))
         )
         
@@ -609,13 +643,14 @@ class RareEarths(Slide):
         
         # Let them fall
         self.play(
-            UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs[0])),
-            UpdateFromAlphaFunc(b0_balls[1], traj_updater(r_trajs[0])),
+            UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs1[0])),
+            UpdateFromAlphaFunc(b0_balls[1], traj_updater(b_trajs2[0])),
+            UpdateFromAlphaFunc(b0_balls[2], traj_updater(r_trajs[0])),
             run_time=1.5
         )
         
         # Accumulate fixed obstacles for the physics engine
-        fixed_obstacles = b_final + r_final
+        fixed_obstacles = b_final1 + b_final2 + r_final
 
         # 4 & 5) Display the counters and snap them to 1
         k_tracker.set_value(1)
@@ -624,54 +659,199 @@ class RareEarths(Slide):
 
         self.next_slide()
 
-        batches = [1, 1, 7, 40, 150]
+        total_remaining = 207
+        manual_count = 5
         
-        for batch_size in batches:
-            
-            # Spread spawn positions randomly across the top
-            xs = [random.uniform(left_x + ball_r, right_x - ball_r) for _ in range(batch_size)]
-            
-            # Simulate physics using the previous balls as solid obstacles
-            trajs, final, sim_time = simulate_settling(
-                xs, ball_r, left_x, right_x, box_bot_y, box_top_y, 
+        # 1. Generate all random X positions
+        xs = [random.uniform(left_x + ball_r, right_x - ball_r) for _ in range(total_remaining)]
+        
+        all_trajs = []
+        for x in xs:
+            # Drop a single ball onto the pile
+            traj, final, _ = simulate_settling(
+                [x], ball_r, left_x, right_x, box_bot_y, box_top_y, 
                 fixed_obstacles=fixed_obstacles
             )
-            
-            # Create the Mobjects exactly where the trajectory says they start
-            batch_balls = VGroup(*[
-                make_circle(RED).move_to(np.array([trajs[i][0][0], trajs[i][0][1], 0])) 
-                for i in range(batch_size)
-            ])
-            
-            # Fade them all in as a cloud above the box
-            self.play(FadeIn(batch_balls, shift=DOWN * 0.2), run_time=0.5)
-            
-            # --- THE MAGIC COUNTING THRESHOLD ---
-            # This updater checks the Y coordinate of every ball.
-            # If it drops below the top line of the box, it counts as "in"!
-            base_ell = ell_tracker.get_value()
-            def counter_updater(tracker, balls=batch_balls, base=base_ell):
-                dropped_in = sum(1 for b in balls if b.get_y() < box_top_y)
-                tracker.set_value(base + dropped_in)
-                
-            ell_tracker.add_updater(counter_updater)
-            
-            # Animate the trajectories
-            anims = [UpdateFromAlphaFunc(batch_balls[i], traj_updater(trajs[i])) for i in range(batch_size)]
-            
-            # Dynamic scaling: large batches lag less and fall faster
-            lag = max(0.01, 0.3 / math.sqrt(batch_size)) 
-            rt = max(0.5, sim_time * 0.5)
-            
-            self.play(LaggedStart(*anims, lag_ratio=lag), run_time=rt)
-            
-            # Cleanup the updater and force the final exact value just to be safe
-            ell_tracker.remove_updater(counter_updater)
-            ell_tracker.set_value(base_ell + batch_size)
-            
-            # Add the newly settled balls to the solid obstacles list for the next batch
+            all_trajs.append(traj[0])
+            # Freeze it exactly where it lands so the next ball can hit it!
             fixed_obstacles.extend(final)
-            self.play(Wait(0.1))
+            
+        # 3. Create the Mobjects (they start invisible above the box)
+        batch_balls = VGroup()
+        for i in range(total_remaining):
+            start_pos = all_trajs[i][0]
+            ball = make_circle(RED).move_to(np.array([start_pos[0], start_pos[1], 0]))
+            ball.start_y = start_pos[1] # <--- Custom attribute!
+            batch_balls.add(ball)
+        
+        # Add the threshold counter updater
+        base_ell = ell_tracker.get_value()
+        def counter_updater(tracker, balls=batch_balls, base=base_ell):
+            # Only counts balls whose Y-coordinate has physically dropped below the box top
+            dropped_in = sum(1 for b in balls if b.get_y() < b.start_y - 1e-3)
+            tracker.set_value(base + dropped_in)
+            
+        ell_tracker.add_updater(counter_updater)
+
+        for i in range(manual_count):
+            ball = batch_balls[i]
+            traj = all_trajs[i]
+            
+            self.play(
+                AnimationGroup(
+                    FadeIn(ball, run_time=0.1),
+                    UpdateFromAlphaFunc(ball, traj_and_fade_updater(traj), run_time=0.8) # Fixed runtime looks great for gravity
+                )
+            )
             self.next_slide()
 
-            # TODO: Changer le lag_ratio et ordonner la chute des boules par ordonnées croissantes #
+        auto_anims = []
+        for i in range(manual_count, total_remaining):
+            ball = batch_balls[i]
+            traj = all_trajs[i]
+            
+            anim = AnimationGroup(
+                FadeIn(ball, run_time=0.1),
+                UpdateFromAlphaFunc(ball, traj_and_fade_updater(traj), run_time=0.8)
+            )
+            auto_anims.append(anim)
+            
+        # Because the physics are totally independent now, LaggedStart works flawlessly!
+        # lag_ratio=0.1 means the next ball starts when the current one is 10% done dropping.
+        self.play(
+            LaggedStart(*auto_anims, lag_ratio=0.1)
+        )
+        
+        # Cleanup and finalize
+        ell_tracker.remove_updater(counter_updater)
+        ell_tracker.set_value(base_ell + total_remaining)
+        
+        self.wait(0.25)
+        self.next_slide()
+
+        self.play(FadeOut(batch_balls), FadeOut(b0_balls))
+
+        scale_f = 0.8
+
+        box_w = 5.5 * scale_f
+        box_h = 3.5 * scale_f
+        ball_r = 0.17 * scale_f
+
+        k_start = 47
+        ell_fixed = 103
+        k_tracker.set_value(0)
+        ell_tracker.set_value(0)
+        etot_tracker = ValueTracker(0)
+        self.add(etot_tracker)
+
+        self.play(
+            VGroup(left_stats, VGroup(open_box, bot_stats)).animate.to_edge(UP, buff=0.6).scale(scale_f)
+        )
+
+        box_top_y = open_box.get_top()[1]
+        box_bot_y = open_box.get_bottom()[1]
+        left_x = open_box.get_left()[0]
+        right_x = open_box.get_right()[0]
+        
+
+        etot_label = MathTex(
+            r"E_\mathrm{tot} =",
+            font_size=48,
+            tex_to_color_map={r"E_\mathrm{tot}": YELLOW}
+        )
+        etot_num = DecimalNumber(0, num_decimal_places=2, color=YELLOW)
+        etot_num.add_updater(lambda m: m.set_value(etot_tracker.get_value()).next_to(etot_label, RIGHT, buff=0.2))
+
+        etot_group = VGroup(etot_label, etot_num).arrange(RIGHT).move_to(DOWN * 1.5)
+
+        refill_fixed = []
+        refill_data = []
+
+        colors = [BLUE]*k_start + [RED]*ell_fixed
+        random.shuffle(colors)
+
+        for col in colors:
+            x_pos = random.uniform(left_x+ball_r,right_x-ball_r)
+            t, f, _ = simulate_settling([x_pos], ball_r, left_x, right_x, box_bot_y, box_top_y, 
+                                        fixed_obstacles=refill_fixed)
+            refill_data.append({"color": col, "traj": t[0], "final": f[0]})
+            refill_fixed.extend(f)
+
+        refill_data_sorted = sorted(refill_data, key=lambda d: d["final"][1])
+
+        refill_balls = VGroup()
+        for data in refill_data_sorted:
+            start_pos = data["traj"][0]
+            ball = make_circle(data["color"]).move_to(np.array([data["traj"][0][0], data["traj"][0][1], 0]))
+            ball.start_y = start_pos[1] 
+            ball.color_id = data["color"]
+            ball.set_opacity(0)
+            refill_balls.add(ball)
+
+        def refill_counter(tracker):
+            b_in = sum(1 for b in refill_balls if b.get_y() < b.start_y - 1e-3 and b.color_id == BLUE)
+            r_in = sum(1 for b in refill_balls if b.get_y() < b.start_y - 1e-3 and b.color_id == RED)
+            k_tracker.set_value(b_in)
+            ell_tracker.set_value(r_in)
+
+        self.add(k_tracker, ell_tracker)
+        k_tracker.add_updater(refill_counter)
+
+        refill_anim = [
+            UpdateFromAlphaFunc(
+                refill_balls[i],
+                traj_and_fade_updater(refill_data_sorted[i]["traj"]),
+                run_time=0.8
+            )
+            for i in range(k_start+ell_fixed)
+        ]
+
+        self.play(
+            LaggedStart(
+                *refill_anim,
+                lag_ratio=0.05
+            ),
+            run_time=5
+        )
+
+        self.next_slide()
+        self.play(Write(etot_group))
+
+        k_tracker.remove_updater(refill_counter)
+        k_tracker.set_value(k_start)
+        ell_tracker.set_value(ell_fixed)
+
+        self.next_slide()
+
+        blue_indices = [i for i, d in enumerate(refill_data_sorted)
+                        if d["color"]==BLUE]
+        random.shuffle(blue_indices)
+
+        for step, idx in enumerate(blue_indices):
+            curr_k = k_tracker.get_value()
+            curr_ell = ell_tracker.get_value()
+            energy_increment = (curr_k + curr_ell) / curr_k
+
+            ball_to_extract = refill_balls[idx]
+
+            rt = max(0.15, 0.6 * (0.90 ** step))
+
+            self.play(
+                ball_to_extract.animate.move_to(UP * 5).set_opacity(0),
+                k_tracker.animate.set_value(curr_k - 1),
+                etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
+                run_time=rt,
+                rate_func=linear
+            )
+
+            if step < 3:
+                self.wait(0.2)
+                self.next_slide()
+
+        bot_E[1].clear_updaters()
+        infty_symbol = MathTex(r"\infty", font_size=48).next_to(bot_E[0], RIGHT, buff=0.2)
+
+        self.play(ReplacementTransform(bot_E[1], infty_symbol))
+
+        self.wait(1)
+        self.next_slide()
