@@ -3,16 +3,19 @@ from manim_slides import Slide
 import random, math, numpy as np
 from manim.utils.tex_file_writing import TexTemplate
 
+
 class RareEarths(Slide):
     def construct(self):
-        self.wait_time_between_slides = 0.1
+        self.wait_time_between_slides = 0.05
 
         title = VGroup(
-            Text("Les Terres Rares : ", t2w={"[-15:-2]": BOLD}, t2c={"[-16:-2]": YELLOW}),
+            Text(
+                "Les Terres Rares : ", t2w={"[-15:-2]": BOLD}, t2c={"[-16:-2]": YELLOW}
+            ),
             Text("La malédiction du mélange", t2c={"mélange": BLUE}),
         ).arrange(DOWN)
 
-        self.play(FadeIn(title))
+        self.play(Write(title))
 
         self.next_slide()
 
@@ -22,56 +25,72 @@ class RareEarths(Slide):
         tex_template.add_to_preamble(r"\usepackage{xcolor}")
 
         # params
-        k_num = 2
+        k_num = 1
         ell_num = 9
         ball_r = 0.17
         padding = 0.06
 
         # lines (one-by-one)
         k_tex = MathTex("k", font_size=48).set_color(BLUE)
-        b1_text = Tex(": Nombre de billes bleues",
-                    tex_template=tex_template,
-                    tex_to_color_map={"bleues": BLUE})
+        b1_text = Tex(
+            ": Nombre de billes bleues",
+            tex_template=tex_template,
+            tex_to_color_map={"bleues": BLUE},
+        )
         b1 = VGroup(k_tex, b1_text).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
 
         ell_tex = MathTex(r"\ell", font_size=48).set_color(RED)
-        b2_text = Tex(": Nombre de billes rouges",
-                    tex_template=tex_template,
-                    tex_to_color_map={"rouges": RED})
+        b2_text = Tex(
+            ": Nombre de billes rouges",
+            tex_template=tex_template,
+            tex_to_color_map={"rouges": RED},
+        )
         b2 = VGroup(ell_tex, b2_text).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
-        
+
         b3_f1 = MathTex("N", font_size=48).set_color(PURPLE)
         b3_f2 = MathTex("=", font_size=48)
         b3_f3 = MathTex("k", font_size=48).set_color(BLUE)
-        b3_f4  = MathTex("+", font_size=48)
+        b3_f4 = MathTex("+", font_size=48)
         b3_f5 = MathTex(r"\ell", font_size=48).set_color(RED)
 
-        b3_text = Tex(": Nombre total de billes",
-                    tex_template=tex_template,
-                    tex_to_color_map={"total": PURPLE})
-        
+        b3_text = Tex(
+            ": Nombre total de billes",
+            tex_template=tex_template,
+            tex_to_color_map={"total": PURPLE},
+        )
+
         b3_unchanged = VGroup(b3_f1, b3_f2).arrange(RIGHT, buff=0.12)
-        
+
         b3_transformed = VGroup(b3_f3, b3_f4, b3_f5, b3_text).arrange(RIGHT, buff=0.12)
 
-        b3 = VGroup(b3_unchanged, b3_transformed).arrange(RIGHT, buff=0.12).to_edge(LEFT, buff=0.6)
+        b3 = (
+            VGroup(b3_unchanged, b3_transformed)
+            .arrange(RIGHT, buff=0.12)
+            .to_edge(LEFT, buff=0.6)
+        )
 
-        bullets = VGroup(b1, b2, b3).arrange(DOWN, aligned_edge=LEFT, buff=0.28).to_edge(LEFT, buff=0.6)
+        bullets = (
+            VGroup(b1, b2, b3)
+            .arrange(DOWN, aligned_edge=LEFT, buff=0.28)
+            .to_edge(LEFT, buff=0.6)
+        )
 
         # open-top box (draw only left, bottom, right edges)
         box_w = 5.0
         box_h = 2.6
-        ref_rect = Rectangle(width=box_w, height=box_h, stroke_width=0).to_edge(RIGHT, buff=0.9)
+        ref_rect = Rectangle(width=box_w, height=box_h, stroke_width=0).to_edge(
+            RIGHT, buff=0.9
+        )
         center = ref_rect.get_center()
         half_w, half_h = box_w / 2, box_h / 2
-        top_left     = center + np.array([-half_w,  half_h, 0])
-        bottom_left  = center + np.array([-half_w, -half_h, 0])
-        bottom_right = center + np.array([ half_w, -half_h, 0])
-        top_right    = center + np.array([ half_w,  half_h, 0])
+        top_left = center + np.array([-half_w, half_h, 0])
+        bottom_left = center + np.array([-half_w, -half_h, 0])
+        bottom_right = center + np.array([half_w, -half_h, 0])
+        top_right = center + np.array([half_w, half_h, 0])
 
-        left_line   = Line(top_left, bottom_left, stroke_width=3, color=WHITE)
+        left_line = Line(top_left, bottom_left, stroke_width=3, color=WHITE)
         bottom_line = Line(bottom_left, bottom_right, stroke_width=3, color=WHITE)
-        right_line  = Line(bottom_right, top_right, stroke_width=3, color=WHITE)
+        right_line = Line(bottom_right, top_right, stroke_width=3, color=WHITE)
 
         open_box = VGroup(left_line, bottom_line, right_line)
 
@@ -82,7 +101,9 @@ class RareEarths(Slide):
         box_bottom = open_box.get_bottom()
         center_x = (box_left[0] + box_right[0]) / 2
 
-        def generate_non_overlapping(n, x_min, x_max, y_min, y_max, r, max_attempts=500):
+        def generate_non_overlapping(
+            n, x_min, x_max, y_min, y_max, r, max_attempts=500
+        ):
             pts = []
             attempts = 0
             min_dist = 2 * r + 0.02
@@ -90,7 +111,7 @@ class RareEarths(Slide):
                 x = random.uniform(x_min, x_max)
                 y = random.uniform(y_min, y_max)
                 ok = True
-                for (px, py) in pts:
+                for px, py in pts:
                     if math.hypot(px - x, py - y) < min_dist:
                         ok = False
                         break
@@ -108,7 +129,7 @@ class RareEarths(Slide):
                     yi = ys[i // cols]
                     pts.append((float(xi), float(yi)))
             return pts
-        
+
         # --- gravity-based placement + precomputed trajectories ---
 
         def sample_x_positions(n, x_min, x_max, min_sep, max_attempts=2000):
@@ -125,13 +146,27 @@ class RareEarths(Slide):
                     xs.append(x)
                 attempts += 1
             if len(xs) < n:
-                xs = list(np.linspace(x_min + min_sep/2, x_max - min_sep/2, n))
+                xs = list(np.linspace(x_min + min_sep / 2, x_max - min_sep / 2, n))
             return xs
 
-        def simulate_settling(xs, ball_r, left_x, right_x, bottom_y, top_y, fixed_obstacles=None,
-                            g=9, dt=1/60, max_time=4.0, restitution=0.25, collision_iters=3):
+        def simulate_settling(
+            xs,
+            ball_r,
+            left_x,
+            right_x,
+            bottom_y,
+            top_y,
+            fixed_obstacles=None,
+            g=9,
+            dt=1 / 60,
+            max_time=4.0,
+            restitution=0.25,
+            collision_iters=3,
+        ):
             n = len(xs)
-            pos = np.array([[x, top_y + random.uniform(0.8, 1.6)] for x in xs], dtype=float)
+            pos = np.array(
+                [[x, top_y + random.uniform(0.8, 1.6)] for x in xs], dtype=float
+            )
             vel = np.zeros((n, 2), dtype=float)
             left = left_x + ball_r
             right = right_x - ball_r
@@ -144,44 +179,43 @@ class RareEarths(Slide):
             for step in range(steps):
                 # integrate
                 for i in range(n):
-                    vel[i,1] -= g * dt
+                    vel[i, 1] -= g * dt
                     pos[i] += vel[i] * dt
                     # wall collisions
-                    if pos[i,0] < left:
-                        pos[i,0] = left
-                        vel[i,0] = -vel[i,0] * restitution
-                        vel[i,1] *= 0.9
-                    if pos[i,0] > right:
-                        pos[i,0] = right
-                        vel[i,0] = -vel[i,0] * restitution
-                        vel[i,1] *= 0.9
-                    if pos[i,1] < bottom:
-                        pos[i,1] = bottom
-                        vel[i,1] = -vel[i,1] * restitution
-                        vel[i,0] *= 0.6
+                    if pos[i, 0] < left:
+                        pos[i, 0] = left
+                        vel[i, 0] = -vel[i, 0] * restitution
+                        vel[i, 1] *= 0.9
+                    if pos[i, 0] > right:
+                        pos[i, 0] = right
+                        vel[i, 0] = -vel[i, 0] * restitution
+                        vel[i, 1] *= 0.9
+                    if pos[i, 1] < bottom:
+                        pos[i, 1] = bottom
+                        vel[i, 1] = -vel[i, 1] * restitution
+                        vel[i, 0] *= 0.6
 
                 for _ in range(collision_iters):
-                    
                     # A. Dynamic-dynamic collisions (pairwise)
                     for i in range(n):
-                        for j in range(i+1, n):
+                        for j in range(i + 1, n):
                             d = pos[j] - pos[i]
                             dist = math.hypot(d[0], d[1])
                             min_dist = 2 * ball_r
-                            
-                            if dist < min_dist: # Overlap detected!
+
+                            if dist < min_dist:  # Overlap detected!
                                 if dist < 1e-8:
                                     theta = random.random() * 2 * math.pi
                                     d = np.array([math.cos(theta), math.sin(theta)])
                                     dist = 1e-8
-                                
+
                                 overlap = min_dist - dist
                                 nrm = d / dist
-                                
+
                                 # Push them apart mathematically
                                 pos[i] -= nrm * overlap * 0.6
                                 pos[j] += nrm * overlap * 0.6
-                                
+
                                 # Bounce velocity
                                 rv = vel[j] - vel[i]
                                 vn = rv.dot(nrm)
@@ -197,31 +231,34 @@ class RareEarths(Slide):
                                 d = pos[i] - sb
                                 dist = math.hypot(d[0], d[1])
                                 min_dist = 2 * ball_r
-                                
-                                if dist < min_dist: # Overlap detected!
+
+                                if dist < min_dist:  # Overlap detected!
                                     if dist < 1e-8:
                                         d = np.array([0.0, 1.0])
                                         dist = 1e-8
-                                    
+
                                     overlap = min_dist - dist
                                     nrm = d / dist
-                                    
+
                                     # Push the falling ball OUT of the static ball
                                     pos[i] += nrm * overlap * 1.1
-                                    
+
                                     # Bounce velocity
                                     vn = vel[i].dot(nrm)
                                     if vn < 0:
                                         J = -(1 + restitution) * vn
                                         vel[i] += J * nrm
-                    
+
                     # C. Strict Boundary Clamp (Moved inside the iteration loop!)
-                    # If the balls pushing each other forced someone through the wall, 
+                    # If the balls pushing each other forced someone through the wall,
                     # this strictly snaps them back inside before the frame ends.
                     for i in range(n):
-                        if pos[i,0] < left: pos[i,0] = left
-                        if pos[i,0] > right: pos[i,0] = right
-                        if pos[i,1] < bottom: pos[i,1] = bottom
+                        if pos[i, 0] < left:
+                            pos[i, 0] = left
+                        if pos[i, 0] > right:
+                            pos[i, 0] = right
+                        if pos[i, 1] < bottom:
+                            pos[i, 1] = bottom
 
                 # 2. Damping and History
                 vel *= 0.999  # small damping
@@ -232,7 +269,7 @@ class RareEarths(Slide):
                 max_speed = np.max(np.linalg.norm(vel, axis=1))
                 max_overlap = 0
                 for i in range(n):
-                    for j in range(i+1, n):
+                    for j in range(i + 1, n):
                         dist = np.linalg.norm(pos[i] - pos[j])
                         max_overlap = max(max_overlap, max(0, 2 * ball_r - dist))
 
@@ -260,9 +297,14 @@ class RareEarths(Slide):
 
         # simulate blue balls (they interact with each other)
         blue_trajs, blue_final, blue_sim_time = simulate_settling(
-            blue_xs, ball_r, box_left[0], box_right[0], box_bottom[1], box_top[1], fixed_obstacles=None
+            blue_xs,
+            ball_r,
+            box_left[0],
+            box_right[0],
+            box_bottom[1],
+            box_top[1],
+            fixed_obstacles=None,
         )
-
 
         # create blue circles and animate along precomputed trajectories
         blue_balls = VGroup()
@@ -273,6 +315,7 @@ class RareEarths(Slide):
 
         def traj_updater(traj):
             L = len(traj)
+
             def updater(mob, alpha):
                 t = alpha * (L - 1)
                 i0 = int(t)
@@ -280,6 +323,7 @@ class RareEarths(Slide):
                 f = t - i0
                 p = traj[i0] * (1 - f) + traj[i1] * f
                 mob.move_to(np.array([p[0], p[1], 0]))
+
             return updater
 
         # blue_anims = [UpdateFromAlphaFunc(blue_balls[i], traj_updater(blue_trajs[i])) for i in range(len(blue_balls))]
@@ -291,8 +335,13 @@ class RareEarths(Slide):
 
         # simulate red balls with blue final positions as static obstacles
         red_trajs, red_final, red_sim_time = simulate_settling(
-            red_xs, ball_r, box_left[0], box_right[0], box_bottom[1], box_top[1],
-            fixed_obstacles=blue_final_positions
+            red_xs,
+            ball_r,
+            box_left[0],
+            box_right[0],
+            box_bottom[1],
+            box_top[1],
+            fixed_obstacles=blue_final_positions,
         )
 
         # create red circles and animate
@@ -310,11 +359,16 @@ class RareEarths(Slide):
 
         # draw the box, reveal first line, animate blue balls
         self.play(Create(open_box))
-        self.next_slide()
 
         # prepare trackers + updaters
-        trackers_b, trackers_r = [ValueTracker(0.0) for _ in range(len(blue_balls))], [ValueTracker(0.0) for _ in range(len(red_balls))]
-        Ls_b, Ls_r = [len(traj) for traj in blue_trajs], [len(traj) for traj in red_trajs]
+        trackers_b, trackers_r = (
+            [ValueTracker(0.0) for _ in range(len(blue_balls))],
+            [ValueTracker(0.0) for _ in range(len(red_balls))],
+        )
+        Ls_b, Ls_r = (
+            [len(traj) for traj in blue_trajs],
+            [len(traj) for traj in red_trajs],
+        )
 
         def make_tracker_updater(traj, tracker, L):
             def updater(mob):
@@ -324,6 +378,7 @@ class RareEarths(Slide):
                 f = t - i0
                 p = traj[i0] * (1 - f) + traj[i1] * f
                 mob.move_to(np.array([p[0], p[1], 0]))
+
             return updater
 
         for i, mob in enumerate(blue_balls):
@@ -337,11 +392,20 @@ class RareEarths(Slide):
         write_time = 1.6
         lag_ratio = 0.05
 
-        initial_ys_b, initial_ys_r = [blue_trajs[i][0][1] for i in range(nb)], [red_trajs[i][0][1] for i in range(nr)]
-        order_b, order_r = sorted(range(nb), key=lambda i: initial_ys_b[i]), sorted(range(nr), key=lambda i: initial_ys_r[i])
+        initial_ys_b, initial_ys_r = (
+            [blue_trajs[i][0][1] for i in range(nb)],
+            [red_trajs[i][0][1] for i in range(nr)],
+        )
+        order_b, order_r = (
+            sorted(range(nb), key=lambda i: initial_ys_b[i]),
+            sorted(range(nr), key=lambda i: initial_ys_r[i]),
+        )
 
         # Build ordered tracker animations and play
-        ordered_anims_b, ordered_anims_r = [trackers_b[i].animate.set_value(1.0) for i in order_b], [trackers_r[i].animate.set_value(1.0) for i in order_r]
+        ordered_anims_b, ordered_anims_r = (
+            [trackers_b[i].animate.set_value(1.0) for i in order_b],
+            [trackers_r[i].animate.set_value(1.0) for i in order_r],
+        )
 
         # run Write + FadeIn first, then animate trackers (no Succession nesting)
         self.play(
@@ -349,9 +413,11 @@ class RareEarths(Slide):
             FadeIn(blue_balls, run_time=fade_time),
             Succession(
                 Wait(fade_time),
-                LaggedStart(*ordered_anims_b, lag_ratio=lag_ratio, run_time=single_run_b)
-                )
-            )
+                LaggedStart(
+                    *ordered_anims_b, lag_ratio=lag_ratio, run_time=single_run_b
+                ),
+            ),
+        )
 
         # finalize: place static copies and remove updaters
         static_blue = VGroup()
@@ -364,17 +430,18 @@ class RareEarths(Slide):
         self.remove(blue_balls)
         blue_balls = static_blue
 
-        self.next_slide()
 
         self.play(
             Write(b2, run_time=write_time),
             FadeIn(red_balls, run_time=fade_time),
             Succession(
                 Wait(fade_time),
-                LaggedStart(*ordered_anims_r, lag_ratio=lag_ratio, run_time=single_run_r)
-                )
-            )
-        
+                LaggedStart(
+                    *ordered_anims_r, lag_ratio=lag_ratio, run_time=single_run_r
+                ),
+            ),
+        )
+
         static_red = VGroup()
         for p in red_final_positions:
             c = make_circle(RED).move_to(np.array([p[0], p[1], 0]))
@@ -385,39 +452,44 @@ class RareEarths(Slide):
         self.remove(red_balls)
         red_balls = static_red
 
-        self.next_slide()
-
         # reveal total
         self.play(Write(b3))
         self.next_slide()
 
         bb1 = MathTex("=", f"{k_num}", font_size=48)
-        bb1[0].set_color(WHITE)      # "="
-        bb1[1].set_color(BLUE)       # k 
+        bb1[0].set_color(WHITE)  # "="
+        bb1[1].set_color(BLUE)  # k
         bb1.next_to(k_tex, RIGHT, buff=0.12)
         bb1.align_to(b1_text, DOWN)  # match baseline with the old text
         # bb1.set_opacity(0)
         # self.add(bb1)
 
         bb2 = MathTex("=", f"{ell_num}", font_size=48)
-        bb2[0].set_color(WHITE)      # "="
-        bb2[1].set_color(RED)       # ell 
+        bb2[0].set_color(WHITE)  # "="
+        bb2[1].set_color(RED)  # ell
         bb2.next_to(ell_tex, RIGHT, buff=0.12)
         bb2.align_to(b2_text, DOWN)  # match baseline with the old text
         # bb2.set_opacity(0)
         # self.add(bb2)
 
         bb3 = MathTex(f"{k_num + ell_num}", font_size=48)
-        bb3[0].set_color(PURPLE)      # k+ell
+        bb3[0].set_color(PURPLE)  # k+ell
         bb3.next_to(b3_unchanged, RIGHT, buff=0.12)
         bb3.align_to(b3_transformed, DOWN)  # match baseline with the old text
         # bb3.set_opacity(0)
         # self.add(bb3)
 
         self.play(
-            LaggedStart(*[Transform(b1_text, bb1), Transform(b2_text, bb2), Transform(b3_transformed, bb3)], lag_ratio=0.7)
-                  )
-        self.next_slide()
+            LaggedStart(
+                *[
+                    Transform(b1_text, bb1),
+                    Transform(b2_text, bb2),
+                    Transform(b3_transformed, bb3),
+                ],
+                lag_ratio=0.7,
+            )
+        )
+        self.play(Wait(1))
 
         box_group = VGroup(open_box, static_blue, static_red)
         box_group.generate_target()
@@ -428,14 +500,15 @@ class RareEarths(Slide):
         bullets.target.set_x(-config["frame_width"] / 4)
         bullets.target.set_y(box_group.target.get_center()[1])
 
-        self.play(
-            MoveToTarget(box_group),
-            MoveToTarget(bullets)
-        )
+        self.play(MoveToTarget(box_group), MoveToTarget(bullets))
 
-        props1 = Tex("Concentration de boules bleues :",
-                    tex_template=tex_template,
-                    tex_to_color_map={"bleues": BLUE})
+        self.next_slide()
+
+        props1 = Tex(
+            "Concentration de boules bleues :",
+            tex_template=tex_template,
+            tex_to_color_map={"bleues": BLUE},
+        )
         props20 = MathTex("c = ", font_size=48)
         props21 = MathTex(
             r"\dfrac{",
@@ -444,25 +517,19 @@ class RareEarths(Slide):
             "N",
             "}",
             font_size=48,
-            tex_to_color_map={"k": BLUE, "N": PURPLE}
+            tex_to_color_map={"k": BLUE, "N": PURPLE},
         )
         props22 = MathTex(
             r"\dfrac{",
             f"{k_num}",
             "}{",
-            f"{ell_num+k_num}",
+            f"{ell_num + k_num}",
             "}",
             font_size=48,
-            tex_to_color_map={
-                str(k_num): BLUE,
-                str(ell_num+k_num): PURPLE
-            }
+            tex_to_color_map={str(k_num): BLUE, str(ell_num + k_num): PURPLE},
         )
-        props23 = MathTex(
-            f"{(k_num/(ell_num+k_num)):.2f}",
-            font_size=48
-        )
-        
+        props23 = MathTex(f"{(k_num / (ell_num + k_num)):.2f}", font_size=48)
+
         txt_group = VGroup(props1, props20).arrange(RIGHT, buff=0.5)
         props = VGroup(txt_group, props21).arrange(RIGHT, buff=0.12).move_to(DOWN * 1.5)
 
@@ -475,13 +542,10 @@ class RareEarths(Slide):
         self.next_slide()
         self.play(ReplacementTransform(props21, props22))
         self.next_slide()
-        self.play(
-            FadeOut(props22, shift= UP * 0.3),
-            FadeIn(props23, shift= UP * 0.3)
-        )
-        
+        self.play(FadeOut(props22, shift=UP * 0.3), FadeIn(props23, shift=UP * 0.3))
+
         self.next_slide()
-        
+
         bullets.generate_target()
         bullets.target.set_x(bullets.get_center()[0])
         bullets.target.set_y(bullets.get_center()[1])
@@ -490,11 +554,12 @@ class RareEarths(Slide):
 
         # c.next_to(bullets.target[0], RIGHT, buff=0.8)
 
-
         self.play(
             MoveToTarget(bullets),
             FadeOut(props1),
-            VGroup(math_gp, props23).animate.next_to(bullets.target[0], RIGHT, buff=0.8)
+            VGroup(math_gp, props23).animate.next_to(
+                bullets.target[0], RIGHT, buff=0.8
+            ),
         )
         # self.play(Transform(b4, ))
 
@@ -504,25 +569,12 @@ class RareEarths(Slide):
         c = k_num / N
         E = 1 / c
 
-        expect1 = Tex("Nombre moyen de tirages avant succès :",
-                        tex_template=tex_template,
-                        )
-        expect2 = MathTex(
-            "E(",
-            "c",
-            ") =",
-            r"\dfrac{1}{",
-            "c",
-            "}",
-            font_size=48
+        expect1 = Tex(
+            "Nombre moyen de tirages avant succès :",
+            tex_template=tex_template,
         )
-        expect3 = MathTex(
-            "E(",
-            f"{c:.2f}",
-            ") =",
-            f"{E:.2f}",
-            font_size = 48
-        )
+        expect2 = MathTex("E(", "c", ") =", r"\dfrac{1}{", "c", "}", font_size=48)
+        expect3 = MathTex("E(", f"{c:.2f}", ") =", f"{E:.2f}", font_size=48)
 
         exp_gp = VGroup(expect1, expect2).arrange(DOWN, buff=0.12).move_to(DOWN * 1.5)
         expect3.move_to(expect2, aligned_edge=LEFT)
@@ -534,9 +586,9 @@ class RareEarths(Slide):
         self.play(
             ReplacementTransform(expect2[0], expect3[0]),
             ReplacementTransform(expect2[1], expect3[1]),
-            ReplacementTransform(expect2[2], expect3[2]), 
-            FadeOut(VGroup(expect2[3], expect2[4], expect2[5]), shift=UP*0.3),
-            FadeIn(expect3[3], shift=UP*0.3)
+            ReplacementTransform(expect2[2], expect3[2]),
+            FadeOut(VGroup(expect2[3], expect2[4], expect2[5]), shift=UP * 0.3),
+            FadeIn(expect3[3], shift=UP * 0.3),
         )
 
         self.next_slide()
@@ -545,15 +597,15 @@ class RareEarths(Slide):
 
         center = RIGHT * 1.5
         half_w, half_h = box_w / 2, box_h / 2
-        
-        top_left     = center + np.array([-half_w,  half_h, 0])
-        bottom_left  = center + np.array([-half_w, -half_h, 0])
-        bottom_right = center + np.array([ half_w, -half_h, 0])
-        top_right    = center + np.array([ half_w,  half_h, 0])
 
-        left_line   = Line(top_left, bottom_left, stroke_width=3, color=WHITE)
+        top_left = center + np.array([-half_w, half_h, 0])
+        bottom_left = center + np.array([-half_w, -half_h, 0])
+        bottom_right = center + np.array([half_w, -half_h, 0])
+        top_right = center + np.array([half_w, half_h, 0])
+
+        left_line = Line(top_left, bottom_left, stroke_width=3, color=WHITE)
         bottom_line = Line(bottom_left, bottom_right, stroke_width=3, color=WHITE)
-        right_line  = Line(bottom_right, top_right, stroke_width=3, color=WHITE)
+        right_line = Line(bottom_right, top_right, stroke_width=3, color=WHITE)
 
         open_box = VGroup(left_line, bottom_line, right_line)
         self.play(Wait(0.5))
@@ -564,42 +616,79 @@ class RareEarths(Slide):
         left_x = top_left[0]
         right_x = top_right[0]
 
-        self.next_slide()
+        self.play(Wait(0.5))
 
         k_tracker = ValueTracker(0)
         ell_tracker = ValueTracker(0)
         self.add(k_tracker, ell_tracker)
-        
+
         # --- Top Text: k, ell, N ---
-        left_k = VGroup(MathTex("k =", tex_to_color_map={"k": BLUE}), Integer(0, color=BLUE)).arrange(RIGHT)
-        left_k[1].add_updater(lambda m: m.set_value(k_tracker.get_value()).next_to(left_k[0], RIGHT, buff=0.2))
-        
-        left_ell = VGroup(MathTex(r"\ell =", tex_to_color_map={r"\ell": RED}), Integer(0, color=RED)).arrange(RIGHT)
-        left_ell[1].add_updater(lambda m: m.set_value(int(ell_tracker.get_value())).next_to(left_ell[0], RIGHT, buff=0.2))
-        
-        left_N = VGroup(MathTex("N =", tex_to_color_map={"N": PURPLE}), Integer(0, color=PURPLE)).arrange(RIGHT)
-        left_N[1].add_updater(lambda m: m.set_value(int(k_tracker.get_value() + ell_tracker.get_value())).next_to(left_N[0], RIGHT, buff=0.2))
-        
+        left_k = VGroup(
+            MathTex("k =", tex_to_color_map={"k": BLUE}), Integer(0, color=BLUE)
+        ).arrange(RIGHT)
+        left_k[1].add_updater(
+            lambda m: m.set_value(k_tracker.get_value()).next_to(
+                left_k[0], RIGHT, buff=0.2
+            )
+        )
+
+        left_ell = VGroup(
+            MathTex(r"\ell =", tex_to_color_map={r"\ell": RED}), Integer(0, color=RED)
+        ).arrange(RIGHT)
+        left_ell[1].add_updater(
+            lambda m: m.set_value(int(ell_tracker.get_value())).next_to(
+                left_ell[0], RIGHT, buff=0.2
+            )
+        )
+
+        left_N = VGroup(
+            MathTex("N =", tex_to_color_map={"N": PURPLE}), Integer(0, color=PURPLE)
+        ).arrange(RIGHT)
+        left_N[1].add_updater(
+            lambda m: m.set_value(
+                int(k_tracker.get_value() + ell_tracker.get_value())
+            ).next_to(left_N[0], RIGHT, buff=0.2)
+        )
+
         # Arrange horizontally on top
-        left_stats = VGroup(left_k, left_ell, left_N).arrange(DOWN, aligned_edge=LEFT, buff=0.3).next_to(open_box, LEFT, buff=1)
+        left_stats = (
+            VGroup(left_k, left_ell, left_N)
+            .arrange(DOWN, aligned_edge=LEFT, buff=0.3)
+            .next_to(open_box, LEFT, buff=1)
+        )
 
         # --- Bottom Text: c, E(c) ---
-        bot_c = VGroup(MathTex("c ="), DecimalNumber(0, num_decimal_places=4)).arrange(RIGHT)
-        bot_c[1].add_updater(lambda m: m.set_value(
-            k_tracker.get_value() / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
-        ).next_to(bot_c[0], RIGHT, buff=0.2))
+        bot_c = VGroup(MathTex("c ="), DecimalNumber(0, num_decimal_places=4)).arrange(
+            RIGHT
+        )
+        bot_c[1].add_updater(
+            lambda m: m.set_value(
+                k_tracker.get_value()
+                / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
+            ).next_to(bot_c[0], RIGHT, buff=0.2)
+        )
 
-        bot_E = VGroup(MathTex("E(c) ="), DecimalNumber(0, num_decimal_places=2)).arrange(RIGHT)
-        bot_E[1].add_updater(lambda m: m.set_value(
-            (k_tracker.get_value() + ell_tracker.get_value()) / max(1.0, k_tracker.get_value())
-        ).next_to(bot_E[0], RIGHT, buff=0.2))
+        bot_E = VGroup(
+            MathTex("E(c) ="), DecimalNumber(0, num_decimal_places=2)
+        ).arrange(RIGHT)
+        bot_E[1].add_updater(
+            lambda m: m.set_value(
+                (k_tracker.get_value() + ell_tracker.get_value())
+                / max(1.0, k_tracker.get_value())
+            ).next_to(bot_E[0], RIGHT, buff=0.2)
+        )
 
         # The bottom stats remain horizontally arranged under the box
-        bot_stats = VGroup(bot_c, bot_E).arrange(RIGHT, buff=2).next_to(open_box, DOWN, buff=0.5)
+        bot_stats = (
+            VGroup(bot_c, bot_E)
+            .arrange(RIGHT, buff=2)
+            .next_to(open_box, DOWN, buff=0.5)
+        )
 
         # Helper to animate trajectories
         def traj_updater(traj):
             L = len(traj)
+
             def updater(mob, alpha):
                 t = alpha * (L - 1)
                 i0 = int(t)
@@ -607,109 +696,141 @@ class RareEarths(Slide):
                 f = t - i0
                 p = traj[i0] * (1 - f) + traj[i1] * f
                 mob.move_to(np.array([p[0], p[1], 0]))
+
             return updater
-        
+
         def traj_and_fade_updater(traj):
             L = len(traj)
             final_pos = np.array([traj[-1][0], traj[-1][1], 0])
+
             def updater(mob, alpha):
-                if alpha < 0.15: mob.set_opacity(alpha / 0.15)
-                else: mob.set_opacity(1.0)
-                
+                if alpha < 0.15:
+                    mob.set_opacity(alpha / 0.15)
+                else:
+                    mob.set_opacity(1.0)
+
                 if alpha >= 0.999:
                     mob.move_to(final_pos)
                     return
-                
+
                 t = alpha * (L - 1)
                 i0 = int(t)
                 i1 = min(i0 + 1, L - 1)
                 f = t - i0
                 p = traj[i0] * (1 - f) + traj[i1] * f
                 mob.move_to(np.array([p[0], p[1], 0]))
+
             return updater
 
         b_trajs, b_final, _ = simulate_settling(
-            [random.uniform(-1, -0.4), random.uniform(-0.4, 0.2)], # Spread their start positions slightly
-            ball_r, left_x, right_x, box_bot_y, box_top_y
+            [
+                random.uniform(-1, -0.4),
+                random.uniform(-0.4, 0.2),
+            ],  # Spread their start positions slightly
+            ball_r,
+            left_x,
+            right_x,
+            box_bot_y,
+            box_top_y,
         )
-        
+
         # 2. Simulate the red ball, using BOTH blue balls as fixed obstacles
         r_trajs, r_final, _ = simulate_settling(
-            [random.uniform(0.5, 1)], 
-            ball_r, left_x, right_x, box_bot_y, box_top_y, 
-            fixed_obstacles=b_final
+            [random.uniform(0.5, 1)],
+            ball_r,
+            left_x,
+            right_x,
+            box_bot_y,
+            box_top_y,
+            fixed_obstacles=b_final,
         )
-        
+
         # 3. Create the 3 Mobjects
         b0_balls = VGroup(
-            make_circle(BLUE).move_to(np.array([b_trajs[0][0][0], b_trajs[0][0][1], 0])),
-            make_circle(BLUE).move_to(np.array([b_trajs[1][0][0], b_trajs[1][0][1], 0])), 
-            make_circle(RED).move_to(np.array([r_trajs[0][0][0], r_trajs[0][0][1], 0]))
+            make_circle(BLUE).move_to(
+                np.array([b_trajs[0][0][0], b_trajs[0][0][1], 0])
+            ),
+            make_circle(BLUE).move_to(
+                np.array([b_trajs[1][0][0], b_trajs[1][0][1], 0])
+            ),
+            make_circle(RED).move_to(np.array([r_trajs[0][0][0], r_trajs[0][0][1], 0])),
         )
-        
+
         # Fade in high above
         self.play(FadeIn(b0_balls, shift=DOWN * 0.5))
-        
+
         # Let them fall
         self.play(
             UpdateFromAlphaFunc(b0_balls[0], traj_updater(b_trajs[0])),
             UpdateFromAlphaFunc(b0_balls[1], traj_updater(b_trajs[1])),
             UpdateFromAlphaFunc(b0_balls[2], traj_updater(r_trajs[0])),
-            run_time=1.5
+            Write(left_stats),
+            Write(bot_stats),
+            run_time=1.5,
         )
-        
+
         # Accumulate ALL fixed obstacles for the 207-ball drop
         fixed_obstacles = b_final + r_final
 
         # 4 & 5) Display the counters
         k_tracker.set_value(2)
         ell_tracker.set_value(1)
-        self.play(Write(left_stats), Write(bot_stats))
 
         self.next_slide()
 
         total_remaining = 200
-        manual_count = 5
-        
+        manual_count = 3
+
         # 1. Generate all random X positions
-        xs = [random.uniform(left_x + ball_r, right_x - ball_r) for _ in range(total_remaining)]
-        
+        xs = [
+            random.uniform(left_x + ball_r, right_x - ball_r)
+            for _ in range(total_remaining)
+        ]
+
         all_trajs = []
         for x in xs:
             # Drop a single ball onto the pile
             traj, final, _ = simulate_settling(
-                [x], ball_r, left_x, right_x, box_bot_y, box_top_y, 
-                fixed_obstacles=fixed_obstacles
+                [x],
+                ball_r,
+                left_x,
+                right_x,
+                box_bot_y,
+                box_top_y,
+                fixed_obstacles=fixed_obstacles,
             )
             all_trajs.append(traj[0])
             # Freeze it exactly where it lands so the next ball can hit it!
             fixed_obstacles.extend(final)
-            
+
         # 3. Create the Mobjects (they start invisible above the box)
         batch_balls = VGroup()
         for i in range(total_remaining):
             start_pos = all_trajs[i][0]
             ball = make_circle(RED).move_to(np.array([start_pos[0], start_pos[1], 0]))
-            ball.start_y = start_pos[1] # <--- Custom attribute!
+            ball.start_y = start_pos[1]  # <--- Custom attribute!
             batch_balls.add(ball)
-        
+
         # Add the threshold counter updater
         base_ell = ell_tracker.get_value()
+
         def counter_updater(tracker, balls=batch_balls, base=base_ell):
             # Only counts balls whose Y-coordinate has physically dropped below the box top
             dropped_in = sum(1 for b in balls if b.get_y() < b.start_y - 1e-3)
             tracker.set_value(base + dropped_in)
-            
+
         ell_tracker.add_updater(counter_updater)
 
         for i in range(manual_count):
             ball = batch_balls[i]
             traj = all_trajs[i]
-            
+
             self.play(
                 AnimationGroup(
                     FadeIn(ball, run_time=0.1),
-                    UpdateFromAlphaFunc(ball, traj_and_fade_updater(traj), run_time=0.8) # Fixed runtime looks great for gravity
+                    UpdateFromAlphaFunc(
+                        ball, traj_and_fade_updater(traj), run_time=0.8
+                    ),  # Fixed runtime looks great for gravity
                 )
             )
             self.next_slide()
@@ -718,24 +839,21 @@ class RareEarths(Slide):
         for i in range(manual_count, total_remaining):
             ball = batch_balls[i]
             traj = all_trajs[i]
-            
+
             anim = AnimationGroup(
                 FadeIn(ball, run_time=0.1),
-                UpdateFromAlphaFunc(ball, traj_and_fade_updater(traj), run_time=0.8)
+                UpdateFromAlphaFunc(ball, traj_and_fade_updater(traj), run_time=0.8),
             )
             auto_anims.append(anim)
-            
+
         # Because the physics are totally independent now, LaggedStart works flawlessly!
         # lag_ratio=0.1 means the next ball starts when the current one is 10% done dropping.
-        self.play(
-            LaggedStart(*auto_anims, lag_ratio=0.1)
-        )
-        
+        self.play(LaggedStart(*auto_anims, lag_ratio=0.1))
+
         # Cleanup and finalize
         ell_tracker.remove_updater(counter_updater)
         ell_tracker.set_value(base_ell + total_remaining)
-        
-        self.wait(0.25)
+
         self.next_slide()
 
         self.play(FadeOut(batch_balls), FadeOut(b0_balls))
@@ -748,7 +866,7 @@ class RareEarths(Slide):
 
         k_start = 47
         ell_fixed = 103
-        
+
         etot_tracker = ValueTracker(0)
         self.add(etot_tracker)
 
@@ -768,53 +886,83 @@ class RareEarths(Slide):
 
         # 3. Perform the move and scale safely!
         self.play(
-            VGroup(left_stats, VGroup(open_box, bot_stats)).animate.to_edge(UP, buff=1).scale(scale_f)
+            VGroup(left_stats, VGroup(open_box, bot_stats))
+            .animate.to_edge(UP, buff=1)
+            .scale(scale_f)
         )
 
         # 4. Sync the trackers to 0
         k_tracker.set_value(0)
         ell_tracker.set_value(0)
 
-        # 5. Re-attach the updaters 
+        # 5. Re-attach the updaters
         # (Notice the buff is multiplied by scale_f so the spacing shrinks proportionally)
-        left_k[1].add_updater(lambda m: m.set_value(k_tracker.get_value()).next_to(left_k[0], RIGHT, buff=0.2 * scale_f))
-        left_ell[1].add_updater(lambda m: m.set_value(int(ell_tracker.get_value())).next_to(left_ell[0], RIGHT, buff=0.2 * scale_f))
-        left_N[1].add_updater(lambda m: m.set_value(int(k_tracker.get_value() + ell_tracker.get_value())).next_to(left_N[0], RIGHT, buff=0.2 * scale_f))
+        left_k[1].add_updater(
+            lambda m: m.set_value(k_tracker.get_value()).next_to(
+                left_k[0], RIGHT, buff=0.2 * scale_f
+            )
+        )
+        left_ell[1].add_updater(
+            lambda m: m.set_value(int(ell_tracker.get_value())).next_to(
+                left_ell[0], RIGHT, buff=0.2 * scale_f
+            )
+        )
+        left_N[1].add_updater(
+            lambda m: m.set_value(
+                int(k_tracker.get_value() + ell_tracker.get_value())
+            ).next_to(left_N[0], RIGHT, buff=0.2 * scale_f)
+        )
 
-        bot_c[1].add_updater(lambda m: m.set_value(
-            k_tracker.get_value() / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
-        ).next_to(bot_c[0], RIGHT, buff=0.2 * scale_f))
+        bot_c[1].add_updater(
+            lambda m: m.set_value(
+                k_tracker.get_value()
+                / max(0.001, (k_tracker.get_value() + ell_tracker.get_value()))
+            ).next_to(bot_c[0], RIGHT, buff=0.2 * scale_f)
+        )
 
-        bot_E[1].add_updater(lambda m: m.set_value(
-            (k_tracker.get_value() + ell_tracker.get_value()) / max(1.0, k_tracker.get_value())
-        ).next_to(bot_E[0], RIGHT, buff=0.2 * scale_f))
+        bot_E[1].add_updater(
+            lambda m: m.set_value(
+                (k_tracker.get_value() + ell_tracker.get_value())
+                / max(1.0, k_tracker.get_value())
+            ).next_to(bot_E[0], RIGHT, buff=0.2 * scale_f)
+        )
 
         box_top_y = open_box.get_top()[1]
         box_bot_y = open_box.get_bottom()[1]
         left_x = open_box.get_left()[0]
         right_x = open_box.get_right()[0]
-        
 
         etot_label = MathTex(
             r"E_\mathrm{tot} =",
             font_size=48,
-            tex_to_color_map={r"E_\mathrm{tot}": YELLOW}
+            tex_to_color_map={r"E_\mathrm{tot}": YELLOW},
         )
         etot_num = DecimalNumber(0, num_decimal_places=2, color=YELLOW)
-        etot_num.add_updater(lambda m: m.set_value(etot_tracker.get_value()).next_to(etot_label, RIGHT, buff=0.2))
+        etot_num.add_updater(
+            lambda m: m.set_value(etot_tracker.get_value()).next_to(
+                etot_label, RIGHT, buff=0.2
+            )
+        )
 
         etot_group = VGroup(etot_label, etot_num).arrange(RIGHT).move_to(DOWN * 1.5)
 
         refill_fixed = []
         refill_data = []
 
-        colors = [BLUE]*k_start + [RED]*ell_fixed
+        colors = [BLUE] * k_start + [RED] * ell_fixed
         random.shuffle(colors)
 
         for col in colors:
-            x_pos = random.uniform(left_x+ball_r,right_x-ball_r)
-            t, f, _ = simulate_settling([x_pos], ball_r, left_x, right_x, box_bot_y, box_top_y, 
-                                        fixed_obstacles=refill_fixed)
+            x_pos = random.uniform(left_x + ball_r, right_x - ball_r)
+            t, f, _ = simulate_settling(
+                [x_pos],
+                ball_r,
+                left_x,
+                right_x,
+                box_bot_y,
+                box_top_y,
+                fixed_obstacles=refill_fixed,
+            )
             refill_data.append({"color": col, "traj": t[0], "final": f[0]})
             refill_fixed.extend(f)
 
@@ -823,15 +971,25 @@ class RareEarths(Slide):
         refill_balls = VGroup()
         for data in refill_data_sorted:
             start_pos = data["traj"][0]
-            ball = make_circle(data["color"]).move_to(np.array([data["traj"][0][0], data["traj"][0][1], 0]))
-            ball.start_y = start_pos[1] 
+            ball = make_circle(data["color"]).move_to(
+                np.array([data["traj"][0][0], data["traj"][0][1], 0])
+            )
+            ball.start_y = start_pos[1]
             ball.color_id = data["color"]
             ball.set_opacity(0)
             refill_balls.add(ball)
 
         def refill_counter(tracker):
-            b_in = sum(1 for b in refill_balls if b.get_y() < b.start_y - 1e-3 and b.color_id == BLUE)
-            r_in = sum(1 for b in refill_balls if b.get_y() < b.start_y - 1e-3 and b.color_id == RED)
+            b_in = sum(
+                1
+                for b in refill_balls
+                if b.get_y() < b.start_y - 1e-3 and b.color_id == BLUE
+            )
+            r_in = sum(
+                1
+                for b in refill_balls
+                if b.get_y() < b.start_y - 1e-3 and b.color_id == RED
+            )
             k_tracker.set_value(b_in)
             ell_tracker.set_value(r_in)
 
@@ -842,18 +1000,12 @@ class RareEarths(Slide):
             UpdateFromAlphaFunc(
                 refill_balls[i],
                 traj_and_fade_updater(refill_data_sorted[i]["traj"]),
-                run_time=0.8
+                run_time=0.8,
             )
-            for i in range(k_start+ell_fixed)
+            for i in range(k_start + ell_fixed)
         ]
 
-        self.play(
-            LaggedStart(
-                *refill_anim,
-                lag_ratio=0.05
-            ),
-            run_time=5
-        )
+        self.play(LaggedStart(*refill_anim, lag_ratio=0.05), run_time=5)
 
         self.next_slide()
         self.play(Write(etot_group))
@@ -864,8 +1016,9 @@ class RareEarths(Slide):
 
         self.next_slide()
 
-        blue_indices = [i for i, d in enumerate(refill_data_sorted)
-                        if d["color"]==BLUE]
+        blue_indices = [
+            i for i, d in enumerate(refill_data_sorted) if d["color"] == BLUE
+        ]
         random.shuffle(blue_indices)
 
         for step, idx in enumerate(blue_indices):
@@ -878,38 +1031,44 @@ class RareEarths(Slide):
             rt = 0.35
 
             start_pos = ball_to_extract.get_center()
-            target_pos = start_pos + UP * 7
+            target_pos = start_pos + UP * 15
 
             # 2. Create a custom updater for the extraction
             def extract_updater(mob, alpha):
                 # A. Move linearly towards the target
                 mob.move_to(start_pos * (1 - alpha) + target_pos * alpha)
-                
-                # B. Delay the fade! 
+
+                # B. Delay the fade!
                 # (The ball stays fully visible for the first 60% of the trip)
                 if alpha < 0.8:
                     mob.set_opacity(1.0)
                 else:
                     # Fade from 1 to 0 during the remaining 40% of the trip
-                    fade_progress = (alpha - 0.8) / 0.2 
+                    fade_progress = (alpha - 0.8) / 0.2
                     mob.set_opacity(1.0 - fade_progress)
 
-            temp_E = DecimalNumber(energy_increment, num_decimal_places=2, color=YELLOW, font_size=48).move_to(bot_E[1])
+            temp_E = DecimalNumber(
+                energy_increment, num_decimal_places=2, color=YELLOW, font_size=48
+            ).move_to(bot_E[1])
             self.add(temp_E)
 
             # 3. Play the animations safely
             if curr_k == 1:
                 bot_E[1].clear_updaters()
-                infty_symbol = MathTex(r"\infty", font_size=48).next_to(bot_E[0], RIGHT, buff=0.2 * scale_f)
-                
+                infty_symbol = MathTex(r"\infty", font_size=48).next_to(
+                    bot_E[0], RIGHT, buff=0.2 * scale_f
+                )
+
                 self.play(
                     UpdateFromAlphaFunc(ball_to_extract, extract_updater),
                     k_tracker.animate.set_value(curr_k - 1),
                     ReplacementTransform(bot_E[1], infty_symbol),
                     # Fly the temp number to the total and fade it!
                     temp_E.animate.move_to(etot_num).set_opacity(0),
-                    etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
-                    run_time=rt
+                    etot_tracker.animate.set_value(
+                        etot_tracker.get_value() + energy_increment
+                    ),
+                    run_time=rt,
                 )
             else:
                 self.play(
@@ -917,11 +1076,13 @@ class RareEarths(Slide):
                     k_tracker.animate.set_value(curr_k - 1),
                     # Fly the temp number to the total and fade it!
                     temp_E.animate.move_to(etot_num).set_opacity(0),
-                    etot_tracker.animate.set_value(etot_tracker.get_value() + energy_increment),
-                    run_time=rt
+                    etot_tracker.animate.set_value(
+                        etot_tracker.get_value() + energy_increment
+                    ),
+                    run_time=rt,
                 )
-            
-            self.remove(temp_E) # Clean up the invisible floating number
+
+            self.remove(temp_E)  # Clean up the invisible floating number
 
             if step < 3:
                 self.wait(0.2)
@@ -940,26 +1101,28 @@ class RareEarths(Slide):
             y_length=5,
             axis_config={"include_numbers": False},
             x_axis_config={"numbers_to_include": [0, 0.5, 1]},
-            tips=False
+            tips=False,
         ).move_to(DOWN * 0.5)
 
         x_label = ax.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
         y_label = ax.get_y_axis_label("H(c)", edge=UP, direction=UP, buff=0.2)
-        
+
         self.play(Create(ax), Write(x_label), Write(y_label))
 
         # 2. Define the Mixing Entropy Math
         # Delta S = - (x*ln(x) + (1-x)*ln(1-x))
         def entropy(x):
-            if x <= 0 or x >= 1: return 0
-            return - (x * math.log(x) + (1 - x) * math.log(1 - x))
+            if x <= 0 or x >= 1:
+                return 0
+            return -(x * math.log(x) + (1 - x) * math.log(1 - x))
 
         curve = ax.plot(entropy, x_range=[0.00001, 0.999], color=WHITE, stroke_width=4)
-        
-        curve_label = MathTex(
-            r"= - \big[c \ln(c) + (1-c) \ln(1-c)\big]", 
-            color=WHITE
-        ).next_to(y_label, RIGHT, buff=-0.2).match_height(y_label)
+
+        curve_label = (
+            MathTex(r"= - \big[c \ln(c) + (1-c) \ln(1-c)\big]", color=WHITE)
+            .next_to(y_label, RIGHT, buff=-0.2)
+            .match_height(y_label)
+        )
 
         self.play(Wait(0.5))
         self.play(Create(curve), Write(curve_label))
@@ -967,176 +1130,154 @@ class RareEarths(Slide):
 
         # 3. Create the dynamically tracking Tangent Line
         c_start = 0.34
-        c_tracker = ValueTracker(c_start) # Start in the middle of the mix
-        
+        c_tracker = ValueTracker(c_start)  # Start in the middle of the mix
+
         # The moving dot
-        dot = always_redraw(lambda: Dot(
-            ax.c2p(c_tracker.get_value(), entropy(c_tracker.get_value())), 
-            color=YELLOW
-        ))
+        dot = always_redraw(
+            lambda: Dot(
+                ax.c2p(c_tracker.get_value(), entropy(c_tracker.get_value())),
+                color=YELLOW,
+            )
+        )
+
+        # margin_tracker = ValueTracker(0.15)
 
         # The mathematical tangent line
         def get_tangent(c):
             if c < 0.00001: c = 0.00001
-            if c > 0.999: c = 0.999
-            
             slope = math.log(1 - c) - math.log(c)
-            
-            # Define the line natively in the math grid!
-            # It spans 0.04 to the left and right, ensuring it always overhangs the 0.02 triangle.
-            margin = 0.04
+            margin = 0.15
             p1 = ax.c2p(c - margin, entropy(c) - slope * margin)
             p2 = ax.c2p(c + margin, entropy(c) + slope * margin)
-            
             return Line(p1, p2, color=YELLOW, stroke_width=3)
 
         tangent = always_redraw(lambda: get_tangent(c_tracker.get_value()))
-        
-        # Track the mathematical slope value on screen
-        # slope_text = always_redraw(lambda: MathTex(
-        #     fr"H'(c) \approx {math.log(1 - max(0.001, c_tracker.get_value())) - math.log(max(0.001, c_tracker.get_value())):.1f}",
-        #     font_size=40
-        # ).next_to(ax, RIGHT, buff=0.5).shift(UP))
 
-        slope_text = MathTex(
-            fr"H'(c) \approx  {math.log(1 - c_start) - math.log(c_start):.3f}",
-            font_size=40
-        ).next_to(dot, UL, buff=0.2)
-
-        # slope_text.add_updater(
-        #     lambda m: m.become(
-        #         MathTex(
-        #             fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {math.log(1 - max(0.00001, c_tracker.get_value())) - math.log(max(0.00001, c_tracker.get_value())):.1f}",
-        #             font_size=40
-        #         )
-        #     )
-        # )
+        slope_label_simple = MathTex(rf"H'(c) \approx", font_size=35)
+        slope_val = DecimalNumber(
+            math.log(1 - c_start) - math.log(c_start),
+            num_decimal_places=1,
+            font_size=35,
+        )
+        slope_text = VGroup(slope_label_simple, slope_val).arrange(RIGHT, buff=0.15)
+        slope_text.next_to(dot, UL, buff=0.4)
 
         self.play(FadeOut(curve_label))
         self.play(FadeIn(dot), Create(tangent), Write(slope_text))
         self.next_slide()
 
-        original_text_pos = slope_text.get_center()
-
         # 1. Group the graph to scale it together
         graph_group = VGroup(ax, curve, x_label, y_label, curve_label)
         graph_group.save_state()
         zoom_center = ax.c2p(c_start, entropy(c_start))
-        self.play(graph_group.animate.scale(8, about_point=zoom_center))
+        self.play(
+            graph_group.animate.scale(8, about_point=zoom_center),
+            # margin_tracker.animate.set_value(0.04)
+        )
         self.next_slide()
 
         # 2. Draw the Triangle
-        dc = 0.02 
-        slope_val = math.log(1 - c_start) - math.log(c_start)
+        dc = 0.02
+        slope_val_num = math.log(1 - c_start) - math.log(c_start)
 
-        p_start_pt = ax.c2p(c_start, entropy(c_start)) # The dot
-        p_corner_pt = ax.c2p(c_start + dc, entropy(c_start)) # Right
-        p_end_pt = ax.c2p(c_start + dc, entropy(c_start) + slope_val * dc) # Right and Up
+        p_start_pt = ax.c2p(c_start, entropy(c_start))  # The dot
+        p_corner_pt = ax.c2p(c_start + dc, entropy(c_start))  # Right
+        p_end_pt = ax.c2p(
+            c_start + dc, entropy(c_start) + slope_val_num * dc
+        )  # Right and Up
 
         dx_line = Line(p_start_pt, p_corner_pt, color=BLUE, stroke_width=5)
         dy_line = Line(p_corner_pt, p_end_pt, color=RED, stroke_width=5)
 
         dx_label = MathTex(r"\delta c", color=BLUE).next_to(dx_line, DOWN, buff=0.15)
-        dy_label = MathTex(r"\delta H", color=RED).next_to(dy_line, RIGHT, buff=0.15)
+        dy_label = (
+            MathTex(r"\delta H", color=RED)
+            .next_to(p_corner_pt, RIGHT, buff=0.15)
+            .shift(DOWN * 0.1)
+        )
+
+        triangle_group = VGroup(dx_line, dy_line, dx_label, dy_label)
 
         self.play(Create(dx_line), Write(dx_label))
         self.play(Create(dy_line), Write(dy_label))
-        self.next_slide()
 
-        slope_text_frac = MathTex(
-            fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {math.log(1 - c_start) - math.log(c_start):.3f}",
-            font_size=40,
-            tex_to_color_map={r"\delta H": RED, r"\delta c": BLUE}
-        ).move_to(slope_text.get_center())
-
-        self.play(ReplacementTransform(slope_text, slope_text_frac))
-        slope_text = slope_text_frac
-        self.next_slide()
-
-        def get_zoom_triangle(c):
-            slope_v = math.log(1 - c) - math.log(c)
-            p_start = ax.c2p(c, entropy(c))
-            p_corner = ax.c2p(c + dc, entropy(c))
-            p_end = ax.c2p(c + dc, entropy(c) + slope_v * dc)
-
-            dx_l = Line(p_start, p_corner, color=BLUE, stroke_width=5)
-            dy_l = Line(p_corner, p_end, color=RED, stroke_width=5)
-
-            dx_lab = MathTex(r"\delta c", color=BLUE).next_to(dx_l, DOWN, buff=0.15)
-            dy_lab = MathTex(r"\delta H", color=RED).next_to(p_corner, RIGHT, buff=0.15).shift(UP * 0.3)
-
-            return VGroup(dx_l, dy_l, dx_lab, dy_lab)
-        
-        triangle_group = VGroup()
         self.add(triangle_group)
 
+        slope_label_frac = MathTex(
+            rf"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = ",
+            font_size=35,
+            tex_to_color_map={r"\delta H": RED, r"\delta c": BLUE},
+        ).move_to(slope_label_simple.get_center())
+
+        self.play(
+            ReplacementTransform(slope_label_simple, slope_label_frac),
+            slope_val.animate.next_to(slope_label_frac, RIGHT, buff=0.15),
+        )
+
+        slope_text = VGroup(slope_label_frac, slope_val)
+        self.add(slope_text)
+        self.next_slide()
+
         dot.clear_updaters()
-        slope_text.clear_updaters()
-        tangent.clear_updaters()
-
         fixed_focus = np.copy(zoom_center)
+        text_offset = slope_label_frac.get_center() - dot.get_center()
 
-        def master_updater(mob):
+        def shift_graph(mob):
             c = max(0.00001, c_tracker.get_value())
-            
-            # A. Shift the graph FIRST
             curr_pos = ax.c2p(c, entropy(c))
             mob.shift(fixed_focus - curr_pos)
-            
-            # B. Now that the axes have moved, position everything perfectly!
-            
-            # The Dot (Locked to the camera focal point)
-            dot.move_to(ax.c2p(c, entropy(c)))
-            
-            # The Tangent Line
-            margin = 0.04
+
+        def update_tangent(mob):
+            c = max(0.00001, c_tracker.get_value())
             slope_v = math.log(1 - c) - math.log(c)
+            margin = 0.15
             p1 = ax.c2p(c - margin, entropy(c) - slope_v * margin)
             p2 = ax.c2p(c + margin, entropy(c) + slope_v * margin)
-            tangent.become(Line(p1, p2, color=YELLOW, stroke_width=3))
-            
-            # The Triangle (On the RIGHT)
+            mob.put_start_and_end_on(p1, p2)  # Native line update (NO .become!)
+
+        def update_triangle(mob):
+            c = max(0.00001, c_tracker.get_value())
+            slope_v = math.log(1 - c) - math.log(c)
             p_start = ax.c2p(c, entropy(c))
             p_corner = ax.c2p(c + dc, entropy(c))
             p_end = ax.c2p(c + dc, entropy(c) + slope_v * dc)
-            
-            dx_l = Line(p_start, p_corner, color=BLUE, stroke_width=5)
-            dy_l = Line(p_corner, p_end, color=RED, stroke_width=5)
-            
-            dx_lab = MathTex(r"\delta c", color=BLUE).next_to(dx_l, DOWN, buff=0.15)
-            dy_lab = MathTex(r"\delta H", color=RED).next_to(p_corner, RIGHT, buff=0.15).shift(UP * 0.3)
-            
-            triangle_group.become(VGroup(dx_l, dy_l, dx_lab, dy_lab))
-            
-            # The Text (Pinned to the Upper Left of the dot)
-            slope_text.become(
-                MathTex(
-                    fr"H'(c) \approx \dfrac{{\delta H}}{{\delta c}} = {slope_v:.1f}",
-                    font_size=40,
-                    tex_to_color_map={r"\delta H": RED, r"\delta c": BLUE}
-                ).next_to(dot, UL, buff=0.4)
-            )
 
-        # def follow_dot(mob):
-        #     curr_pos = ax.c2p(c_tracker.get_value(), entropy(c_tracker.get_value()))
-        #     mob.shift(fixed_focus - curr_pos)
+            # Native sub-mobject updates
+            mob[0].put_start_and_end_on(p_start, p_corner)
+            mob[1].put_start_and_end_on(p_corner, p_end)
+            mob[2].next_to(mob[0], DOWN, buff=0.15)
+            mob[3].next_to(p_corner, RIGHT, buff=0.15).shift(DOWN * 0.3)
 
-        graph_group.add_updater(master_updater)
+        def update_slope_text(mob):
+            c = max(0.00001, c_tracker.get_value())
+            slope_v = math.log(1 - c) - math.log(c)
 
-        self.play(
-            c_tracker.animate.set_value(0.00001), 
-            run_time=6, 
-            rate_func=smooth
-        )
+            mob[0].move_to(dot.get_center() + text_offset)  # Keep label pinned
+            mob[1].set_value(slope_v)  # Native number update
+            mob[1].next_to(mob[0], RIGHT, buff=0.15)
 
-        self.play(Wait(0.5))
+        graph_group.add_updater(shift_graph)
+        tangent.add_updater(update_tangent)
+        triangle_group.add_updater(update_triangle)
+        slope_text.add_updater(update_slope_text)
+
+        dot.add_updater(lambda d: d.move_to(fixed_focus))
+
+        self.play(c_tracker.animate.set_value(0.00001), run_time=6, rate_func=smooth)
+
+        # self.play(Wait(0.5))
 
         slope_text.clear_updaters()
-        final_infty = MathTex(r"H'(c) \to \infty", font_size=48, color=RED).move_to(slope_text)
+        final_infty = MathTex(r"H'(c) \to \infty", font_size=48, color=RED).move_to(
+            slope_text, aligned_edge=LEFT
+        )
+
+        self.next_slide()
+
         self.play(ReplacementTransform(slope_text, final_infty))
 
         self.wait(1)
-        
+
         # # 7. Unzoom
         # graph_group.remove_updater(follow_dot)
 
@@ -1147,7 +1288,7 @@ class RareEarths(Slide):
         #     Wait(0.1),
         #     final_infty.animate.move_to(original_text_pos)
         # )
-        
+
         # self.play(Wait(1))
 
         self.next_slide()
@@ -1158,9 +1299,10 @@ class RareEarths(Slide):
         ax_left = Axes(
             x_range=[0, 0.55, 0.1],
             y_range=[0, 0.8, 0.2],
-            x_length=5, y_length=5,
+            x_length=5,
+            y_length=5,
             axis_config={"include_numbers": False},
-            tips=False
+            tips=False,
         ).to_corner(DL, buff=1)
 
         ax_left_x = ax_left.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
@@ -1170,74 +1312,132 @@ class RareEarths(Slide):
         # 2. Right Axes: Cost Curve (Derivative)
         ax_right = Axes(
             x_range=[0, 0.55, 0.1],
-            y_range=[0, 5, 1], # The cost derivative goes up to ~4.6 at c=0.01
-            x_length=5, y_length=5,
+            y_range=[0, 5, 1],  # The cost derivative goes up to ~4.6 at c=0.01
+            x_length=5,
+            y_length=5,
             axis_config={"include_numbers": False},
-            tips=False
+            tips=False,
         ).to_corner(DR, buff=1)
 
-        ax_right_x = ax_right.get_x_axis_label("c", edge=RIGHT, direction=DOWN, buff=0.2)
+        ax_right_x = ax_right.get_x_axis_label(
+            "c", edge=RIGHT, direction=DOWN, buff=0.2
+        )
         label_mob = MathTex(r"\delta H", r"\text{ (Energie)}")
         label_mob[0].set_color(RED)
-        ax_right_y = ax_right.get_y_axis_label(label_mob, edge=UP, direction=UP, buff=0.2)
+        ax_right_y = ax_right.get_y_axis_label(
+            label_mob, edge=UP, direction=UP, buff=0.2
+        )
 
         self.play(
-            Create(ax_left), Write(ax_left_x), Write(ax_left_y), Create(curve_left),
-            Create(ax_right), Write(ax_right_x), Write(ax_right_y)
+            Create(ax_left),
+            Write(ax_left_x),
+            Write(ax_left_y),
+            Create(curve_left),
+            Create(ax_right),
+            Write(ax_right_x),
+            Write(ax_right_y),
         )
 
         # 3. Dynamic Tracking Elements
         c_slide = ValueTracker(0.48)
-        dc = 0.05 # Triangle width
+        dc = 0.025  # Triangle width
+        left_dot = always_redraw(lambda: Dot(ax_left.c2p(c_slide.get_value(), entropy(c_slide.get_value())), color=YELLOW))
+
+        def get_tangent_left(c):
+            c = max(0.00001, c) # Safety clamp
+            slope = math.log(1 - c) - math.log(c)
+            margin = 0.1  # How far the tangent extends left and right
+            
+            p1 = ax_left.c2p(c - margin, entropy(c) - slope * margin)
+            p2 = ax_left.c2p(c + margin, entropy(c) + slope * margin)
+            return Line(p1, p2, color=YELLOW, stroke_width=3)
+
+        tangent_left = always_redraw(lambda: get_tangent_left(c_slide.get_value()))
 
         def get_triangle(c):
             # Triangle points mapped to the left graph
-            p_start = ax_left.c2p(c + dc, entropy(c + dc))
-            p_corner = ax_left.c2p(c, entropy(c + dc))
-            p_end = ax_left.c2p(c, entropy(c))
+            p_start = ax_left.c2p(c, entropy(c))
+            p_corner = ax_left.c2p(c + dc, entropy(c))
+
+            slope_v = math.log(1 - c) - math.log(c)
+
+            p_end = ax_left.c2p(c + dc, entropy(c) + slope_v * dc)
 
             dx_line = Line(p_start, p_corner, color=BLUE, stroke_width=5)
             dy_line = Line(p_corner, p_end, color=RED, stroke_width=5)
 
             # Labels that stick to the lines
-            dx_label = MathTex(r"\delta c", color=BLUE, font_size=30).next_to(dx_line, UP, buff=0.1)
-            dy_label = MathTex(r"\delta H", color=RED, font_size=30).next_to(dy_line, LEFT, buff=0.1)
+            dx_label = MathTex(r"\delta c", color=BLUE, font_size=30).next_to(
+                dx_line, DOWN, buff=0.1
+            )
+            dy_label = MathTex(r"\delta H", color=RED, font_size=30).next_to(
+                dy_line, RIGHT, buff=0.1
+            )
 
             return VGroup(dx_line, dy_line, dx_label, dy_label)
-        
+
         triangle = always_redraw(lambda: get_triangle(c_slide.get_value()))
 
         # The mathematical derivative for the right graph
         def deriv_cost(x):
-            if x <= 0.001: x = 0.001
-            if x >= 0.999: x = 0.999
+            if x <= 0.00001:
+                x = 0.00001
+            if x >= 0.999:
+                x = 0.999
             return math.log(1 - x) - math.log(x)
 
         # The dot tracing the cost on the right graph
-        cost_dot = always_redraw(lambda: Dot(
-            ax_right.c2p(c_slide.get_value(), deriv_cost(c_slide.get_value())),
-            color=RED
-        ))
+        cost_dot = always_redraw(
+            lambda: Dot(
+                ax_right.c2p(c_slide.get_value(), deriv_cost(c_slide.get_value())),
+                color=RED,
+            )
+        )
+
+        def get_perfect_trace(c):
+            c = max(0.00001, c)
+            y_start = deriv_cost(0.48)
+            y_end = deriv_cost(c)
+            
+            # Prevent errors on the very first frame before it moves
+            if y_end <= y_start + 0.001:
+                return VMobject().set_points_as_corners([ax_right.c2p(0.48, y_start), ax_right.c2p(0.48, y_start)])
+            
+            # 1. Sample evenly across the Y-AXIS to guarantee perfect resolution during the vertical explosion
+            y_vals = np.linspace(y_start, y_end, 150)
+            
+            # 2. Use the mathematical inverse to find the X points
+            pts = [ax_right.c2p(1 / (math.exp(y) + 1), y) for y in y_vals]
+            
+            # 3. Draw with corners to permanently banish Manim's smoothing artifacts
+            return VMobject(color=RED, stroke_width=4).set_points_as_corners(pts)
 
         # Traced path logic: Draws the plot from the CURRENT c_value up to the STARTING c_value
-        cost_trace = always_redraw(lambda: ax_right.plot(
-            deriv_cost,
-            x_range=[c_slide.get_value(), 0.48],
-            color=RED, stroke_width=4
-        ))
+        cost_trace = always_redraw(lambda: get_perfect_trace(c_slide.get_value()))
 
         self.next_slide()
 
-        self.play(FadeIn(triangle), FadeIn(cost_dot))
-        self.add(cost_trace) # Activates the ink trail
+        self.play(FadeIn(left_dot), FadeIn(tangent_left), FadeIn(triangle), FadeIn(cost_dot))
+        self.add(cost_trace)  # Activates the ink trail
 
         self.next_slide()
 
         # 4. Slide to the left!
         self.play(
-            c_slide.animate.set_value(0.01),
-            run_time=6, # Nice and slow so they can watch the trace
-            rate_func=linear
+            c_slide.animate.set_value(0.00001),
+            run_time=6,  # Nice and slow so they can watch the trace
+            rate_func=linear,
         )
         self.wait(2)
         self.next_slide()
+
+        self.play(*[FadeOut(m) for m in self.mobjects])
+
+        title = VGroup(
+            Text(
+                "Merci de", t2w={"[0:5]": BOLD}, t2c={"[0:5]": BLUE}
+            ),
+            Text("attention !", t2w={"attention": BOLD}, t2c={"attention": YELLOW}),
+        ).arrange(DOWN, buff=0.5)
+
+        self.play(Write(title))
