@@ -1437,7 +1437,7 @@ class RareEarths(Slide):
             Text(
                 "Merci de", t2w={"[0:5]": BOLD}, t2c={"[0:5]": BLUE}
             ),
-            Text("attention !", t2w={"attention": BOLD}, t2c={"attention": YELLOW}),
+            Text("votre attention !", t2w={"attention": BOLD}, t2c={"attention": YELLOW}),
         ).arrange(DOWN, buff=0.5)
 
         self.play(Write(title))
