@@ -1,0 +1,5 @@
+\beamer@sectionintoc {1}{Algorithmes}{3}{0}{1}
+\beamer@sectionintoc {2}{Apprentissage Machine (ML)}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{La régression linéaire}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{L'importance du nombre de données}{9}{0}{2}
+\beamer@subsectionintoc {2}{3}{L'importance du nombre de paramètres}{10}{0}{2}

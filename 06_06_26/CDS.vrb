@@ -1,0 +1,27 @@
+\frametitle{L'importance du nombre de données}
+\begin{center}
+			\begin{tikzpicture}[scale=1]
+				\begin{axis}[
+					axis lines = center,
+					every axis plot/.append style={line width=1.5pt},
+					xticklabels = \empty,
+					yticklabels = \empty,
+					xmin = -0.15, xmax = 3.5,
+					ymin = -0.15, ymax = 3.5,
+					domain = -0.15:3.5,
+					samples = 100,
+					grid = major,
+					width = 10cm,
+					height = 8cm,
+					thick
+					]
+					
+					\addplot [only marks] table {
+						1 1.2
+						1.5 1.9
+						2 1.5
+					};
+					
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
