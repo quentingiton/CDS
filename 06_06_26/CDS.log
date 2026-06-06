@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.28)  6 JUN 2026 11:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.28)  6 JUN 2026 12:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1766,7 +1766,7 @@ Overfull \vbox (5.96487pt too high) detected at line 488
 [17
 
 ]
-Overfull \vbox (20.72067pt too high) detected at line 548
+Overfull \vbox (20.72067pt too high) detected at line 549
  []
 
 
@@ -1774,7 +1774,7 @@ Overfull \vbox (20.72067pt too high) detected at line 548
 [18
 
 ]
-Overfull \vbox (20.72067pt too high) detected at line 548
+Overfull \vbox (20.72067pt too high) detected at line 549
  []
 
 
@@ -1819,11 +1819,11 @@ Overfull \vbox (20.72067pt too high) detected at line 548
 
 ]
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 7
-80.
+82.
  (c:/texlive/2025/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \vbox (10.04579pt too high) detected at line 780
+Overfull \vbox (10.04579pt too high) detected at line 782
  []
 
 
@@ -1854,7 +1854,7 @@ Package logreq Info: Writing requests to 'CDS.run.xml'.
 Here is how much of TeX's memory you used:
  72878 strings out of 467747
  1821278 string characters out of 5431120
- 4002114 words of memory out of 5000000
+ 4000114 words of memory out of 5000000
  100544 multiletter control sequences out of 15000+600000
  693299 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1871,7 +1871,7 @@ st/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/pub
 lic/lm/lmtt12.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbo
 ls/msam10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/m
 sbm10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on CDS.pdf (29 pages, 431483 bytes).
+Output written on CDS.pdf (29 pages, 431704 bytes).
 PDF statistics:
  325 PDF objects out of 1000 (max. 8388607)
  249 compressed objects within 3 object streams
