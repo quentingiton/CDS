@@ -14,16 +14,44 @@
 \headcommand {\beamer@subsectionentry {0}{2}{1}{5}{La régression linéaire}}
 \headcommand {\slideentry {2}{1}{1}{5/8}{La régression linéaire}{0}}
 \headcommand {\beamer@framepages {5}{8}}
-\headcommand {\beamer@subsectionpages {5}{8}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{9}{L'importance du nombre de données}}
-\headcommand {\slideentry {2}{2}{1}{9/9}{L'importance du nombre de données}{0}}
-\headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@subsectionpages {9}{9}}
-\headcommand {\beamer@subsectionentry {0}{2}{3}{10}{L'importance du nombre de paramètres}}
-\headcommand {\slideentry {2}{3}{1}{10/10}{L'importance du nombre de paramètres}{0}}
-\headcommand {\beamer@framepages {10}{10}}
-\headcommand {\beamer@partpages {1}{10}}
-\headcommand {\beamer@subsectionpages {11}{10}}
-\headcommand {\beamer@sectionpages {11}{10}}
-\headcommand {\beamer@documentpages {10}}
-\headcommand {\gdef \inserttotalframenumber {6}}
+\headcommand {\slideentry {2}{1}{2}{9/11}{La régression linéaire}{0}}
+\headcommand {\beamer@framepages {9}{11}}
+\headcommand {\beamer@subsectionpages {5}{11}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{12}{L'importance du nombre de données}}
+\headcommand {\slideentry {2}{2}{1}{12/15}{L'importance du nombre de données}{0}}
+\headcommand {\beamer@framepages {12}{15}}
+\headcommand {\beamer@subsectionpages {12}{15}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{16}{L'importance du nombre de paramètres}}
+\headcommand {\slideentry {2}{3}{1}{16/16}{L'importance du nombre de paramètres}{0}}
+\headcommand {\beamer@framepages {16}{16}}
+\headcommand {\beamer@sectionpages {5}{16}}
+\headcommand {\beamer@subsectionpages {16}{16}}
+\headcommand {\sectionentry {3}{Réseaux de neurones}{17}{Réseaux de neurones}{0}}
+\headcommand {\slideentry {3}{0}{1}{17/19}{}{0}}
+\headcommand {\beamer@framepages {17}{19}}
+\headcommand {\beamer@subsectionpages {17}{19}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{20}{Choix de la fonction de perte}}
+\headcommand {\slideentry {3}{1}{1}{20/24}{Choix de la fonction de perte}{0}}
+\headcommand {\beamer@framepages {20}{24}}
+\headcommand {\slideentry {3}{1}{2}{25/25}{Choix de la fonction de perte}{0}}
+\headcommand {\beamer@framepages {25}{25}}
+\headcommand {\beamer@sectionpages {17}{25}}
+\headcommand {\beamer@subsectionpages {20}{25}}
+\headcommand {\sectionentry {4}{Modèles Génératifs}{26}{Modèles Génératifs}{0}}
+\headcommand {\slideentry {4}{0}{1}{26/26}{}{0}}
+\headcommand {\beamer@framepages {26}{26}}
+\headcommand {\beamer@sectionpages {26}{26}}
+\headcommand {\beamer@subsectionpages {26}{26}}
+\headcommand {\sectionentry {5}{Grands Modèles de Langage (LLM)}{27}{Grands Modèles de Langage (LLM)}{0}}
+\headcommand {\slideentry {5}{0}{1}{27/28}{}{0}}
+\headcommand {\beamer@framepages {27}{28}}
+\headcommand {\beamer@sectionpages {27}{28}}
+\headcommand {\beamer@subsectionpages {27}{28}}
+\headcommand {\sectionentry {6}{Pour résumer}{29}{Pour résumer}{0}}
+\headcommand {\slideentry {6}{0}{1}{29/29}{}{0}}
+\headcommand {\beamer@framepages {29}{29}}
+\headcommand {\beamer@partpages {1}{29}}
+\headcommand {\beamer@subsectionpages {29}{29}}
+\headcommand {\beamer@sectionpages {29}{29}}
+\headcommand {\beamer@documentpages {29}}
+\headcommand {\gdef \inserttotalframenumber {13}}

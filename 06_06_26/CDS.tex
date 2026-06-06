@@ -37,7 +37,7 @@ corners=5pt,thick]
 	},
 }
 \usepackage{amssymb}
-\usetikzlibrary{arrows.meta, positioning, calc}
+\usetikzlibrary{arrows.meta, positioning, calc, backgrounds, shapes.geometric}
 \usepackage{esvect}
 \usepackage{graphicx}
 
@@ -274,13 +274,27 @@ corners=5pt,thick]
 		\end{columns}
 		\only<2>{
 		\begin{equation*}
-			\mathrm{MSE} = \min_{a,b} \sum_{i=1}^N \big( y_i - (ax_i+b) \big)^2
+			\mathrm{MSE} = \frac{1}{N}\sum_{i=1}^N \big( y_i - (ax_i+b) \big)^2
 		\end{equation*}
 		}
 		\vspace{\baselineskip}
 		\begin{center}
-			\only<4>{\small\url{https://quentingiton.github.io/scripts/linear-regression}}
+			\only<4>{\small\purp{\url{https://quentingiton.github.io/scripts/linear-regression}}}
 		\end{center}
+	\end{frame}
+	
+	\begin{frame}[t]{Les paramètres optimaux}
+		\begin{equation*}
+			\min_{a,b} \frac{1}{N}\sum_{i=1}^N \big( y_i - (ax_i+b) \big)^2
+		\end{equation*}
+		\begin{itemize}[<+->]
+			\item On calcule $\bar x = \frac{1}{N}\sum_{i=1}^N x_i$ et $\bar y = \frac{1}{N}\sum_{i=1}^N y_i$
+			\item On calcule ensuite
+			\begin{equation*}
+				a^\star = \frac{\sum_{i=1}^N (x_i-\bar x)(y_i-\bar y)}{\sum_{i=1}^N (x_i-\bar x)^2}\quad\text{et}\quad b^\star = \bar{y}-a^\star\bar x
+			\end{equation*}
+			\item La meilleure droite est alors $y=a^\star x + b^\star$
+		\end{itemize}
 	\end{frame}
 	
 	
@@ -296,8 +310,8 @@ corners=5pt,thick]
 					xticklabels = \empty,
 					yticklabels = \empty,
 					xmin = -0.15, xmax = 3.5,
-					ymin = -0.15, ymax = 3.5,
-					domain = -0.15:3.5,
+					ymin = -2, ymax = 3.5,
+					domain = -2:3.5,
 					samples = 100,
 					grid = major,
 					width = 10cm,
@@ -305,10 +319,120 @@ corners=5pt,thick]
 					thick
 					]
 					
-					\addplot [only marks] table {
-						1 1.2
-						1.5 1.9
-						2 1.5
+					\addplot [only marks, color=Grad1, visible on=<1>] table {
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.9842105263157893 1.3858415953568186
+					};
+
+					\addplot [only marks, color=Grad3, visible on=<2>] table {
+						0.1 -0.11848532445840917
+						0.24736842105263157 0.4668411880163601
+						0.39473684210526316 0.45586683295825536
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.8368421052631578 1.4136393013535486
+						0.9842105263157893 1.3858415953568186
+						1.131578947368421 1.5133467532739184
+						1.2789473684210526 1.4352792099146607
+						1.4263157894736842 1.9847979994842655
+						1.5736842105263158 1.6104886859033327
+						1.7210526315789474 1.4696699135846876
+						1.8684210526315788 1.1238413392693727
+						2.0157894736842104 0.9869547390394418
+						2.163157894736842 0.723456450809622
+						2.3105263157894735 -0.02702660407350077
+						2.457894736842105 0.28251726085245377
+						2.6052631578947367 -0.7194971133699067
+						2.7526315789473683 -1.3926722832774978
+						2.9 -1.956650600551694
+					};
+					
+					\addplot [only marks, color=Grad1, visible on=<2>] table {
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.9842105263157893 1.3858415953568186
+					};
+					
+					\addplot [only marks, color=Grad5, visible on=<3>] table {
+						0.1 0.5185146755415907
+						0.24736842105263157 0.8638633486811801
+						0.39473684210526316 0.669376528249114
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.8368421052631578 1.4154038442898367
+						0.9842105263157893 1.3858415953568186
+						1.131578947368421 1.6562747311132537
+						1.2789473684210526 1.7334869661473475
+						1.4263157894736842 2.4947509080715236
+						1.5736842105263158 2.3886521208063796
+						1.7210526315789474 2.5725092487647427
+						1.8684210526315788 2.6078219486876546
+						2.0157894736842104 2.908541996657171
+						2.163157894736842 3.1391157305880157
+						2.3105263157894735 2.939170071826776
+						2.457894736842105 3.855716706835834
+						2.6052631578947367 3.5171704766577956
+						2.7526315789473683 3.563928824755744
+						2.9 3.7763493994483066
+					};
+					
+					\addplot [only marks, color=Grad1, visible on=<3>] table {
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.9842105263157893 1.3858415953568186
+					};
+					
+					\addplot [only marks, color=Grad3, visible on=<4>] table {
+						0.1 -0.11848532445840917
+						0.24736842105263157 0.4668411880163601
+						0.39473684210526316 0.45586683295825536
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.8368421052631578 1.4136393013535486
+						0.9842105263157893 1.3858415953568186
+						1.131578947368421 1.5133467532739184
+						1.2789473684210526 1.4352792099146607
+						1.4263157894736842 1.9847979994842655
+						1.5736842105263158 1.6104886859033327
+						1.7210526315789474 1.4696699135846876
+						1.8684210526315788 1.1238413392693727
+						2.0157894736842104 0.9869547390394418
+						2.163157894736842 0.723456450809622
+						2.3105263157894735 -0.02702660407350077
+						2.457894736842105 0.28251726085245377
+						2.6052631578947367 -0.7194971133699067
+						2.7526315789473683 -1.3926722832774978
+						2.9 -1.956650600551694
+					};
+					
+					\addplot [only marks, color=Grad5, visible on=<4>] table {
+						0.1 0.5185146755415907
+						0.24736842105263157 0.8638633486811801
+						0.39473684210526316 0.669376528249114
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.8368421052631578 1.4154038442898367
+						0.9842105263157893 1.3858415953568186
+						1.131578947368421 1.6562747311132537
+						1.2789473684210526 1.7334869661473475
+						1.4263157894736842 2.4947509080715236
+						1.5736842105263158 2.3886521208063796
+						1.7210526315789474 2.5725092487647427
+						1.8684210526315788 2.6078219486876546
+						2.0157894736842104 2.908541996657171
+						2.163157894736842 3.1391157305880157
+						2.3105263157894735 2.939170071826776
+						2.457894736842105 3.855716706835834
+						2.6052631578947367 3.5171704766577956
+						2.7526315789473683 3.563928824755744
+						2.9 3.7763493994483066
+					};
+					
+					\addplot [only marks, color=Grad1, visible on=<4>] table {
+						0.5421052631578946 0.7543236138429592
+						0.6894736842105262 1.204746317884315
+						0.9842105263157893 1.3858415953568186
 					};
 					
 				\end{axis}
@@ -334,8 +458,8 @@ corners=5pt,thick]
 					xmin = -1.5, xmax = 1.5,
 					ymin = -1.5, ymax = 1.5,
 					domain = -1.5:1.5,
-					samples = 100, % Augmenter pour lisser les courbes de haut degré
-					legend pos = outer north east, % Place la légende à l'extérieur pour ne pas cacher les courbes
+					samples = 100,
+					legend pos = outer north east,
 					legend cell align = {left},
 					grid = major,
 					width = 10cm,
@@ -343,23 +467,18 @@ corners=5pt,thick]
 					thick
 					]
 					
-					% Degré 1 (ax + b) -> 2 paramètres
 					\addplot[color=Grad1] {0.4*x-0.2};
 					\addlegendentry{2 paramètres}
 					
-					% Degré 2 (ax^2 + bx + c) -> 3 paramètres
 					\addplot[color=Grad2] {3.9*x^2+1.4*x-0.6};
 					\addlegendentry{3 paramètres}
 					
-					% Degré 3 -> 4 paramètres
 					\addplot[color=Grad3] {5*x^3-2*x^2-1.1*x};
 					\addlegendentry{4 paramètres}
 					
-					% Degré 4 -> 5 paramètres
 					\addplot[color=Grad4] {5*x^4+0.3*x^3-3*x^2-0.3*x+0.5};
 					\addlegendentry{5 paramètres}
 					
-					% Degré 5 -> 6 paramètres
 					\addplot[color=Grad5] {4*x^5+0.3*x^4-2.6*x^3+0.5*x+0.2};
 					\addlegendentry{6 paramètres}
 					
@@ -370,10 +489,295 @@ corners=5pt,thick]
 	
 	
 	\section{Réseaux de neurones}
+	
+	
+	\begin{frame}[t]{Réseaux de neurones}
+		\begin{center}
+			\begin{tikzpicture}[
+				x=2.5cm, y=1cm, >=stealth,
+				neuron/.style={circle, thick, minimum size=0.8cm, inner sep=0pt},
+				input/.style={neuron, fill=brandAccent!20, draw=brandAccent, text=black},
+				hidden/.style={neuron, fill=white, draw=brandPurple, text=black},
+				output/.style={neuron, fill=brandPurple!20, draw=brandPurple, text=black},
+				link/.style={->, shorten >=1pt, draw=black!40}
+				]
+				
+				\foreach \m/\y in {1/1, 2/0, 3/-1}
+				\node [input] (I-\m) at (0,\y) {$x_\m$};
+				
+				\foreach \m/\y in {1/1.5, 2/0.5, 3/-0.5, 4/-1.5}
+				\node [hidden] (H-\m) at (1,\y) {$h_\m^{(1)}$};
+				
+				\foreach \m/\y in {1/1.5, 2/0.5, 3/-0.5, 4/-1.5}
+				\node [hidden] (HH-\m) at (2,\y) {$h_\m^{(2)}$};
+				
+				\foreach \m/\y in {1/0.5, 2/-0.5}
+				\node [output] (O-\m) at (3,\y) {$y_\m$};
+				
+				\foreach \i in {1,2,3}
+				\foreach \j in {1,2,3,4}
+				\draw [link] (I-\i) edge (H-\j);
+				
+				\foreach \i in {1,2,3,4}
+				\foreach \j in {1,2,3,4}
+				\draw [link] (H-\i) edge (HH-\j);
+				
+				\foreach \i in {1,2,3,4}
+				\foreach \j in {1,2}
+				\draw [link] (HH-\i) edge (O-\j);
+			\end{tikzpicture}
+		\end{center}
+		\begin{columns}
+			\begin{column}{0.48\textwidth}
+				\only<2->{
+					\begin{align*}
+						h_1^{(1)} &= a_1^{(1)} x_1 + b_1^{(1)} \\
+						&+ a_2^{(1)} x_2 + b_2^{(1)} \\
+						&+ a_3^{(1)} x_3 + b_3^{(1)} \\
+					\end{align*}
+				}
+			\end{column}
+			\begin{column}{0.48\textwidth}
+				\only<3->{
+					\begin{itemize}
+						\item $6$ paramètres \textbf{par neurone !} 
+					\end{itemize}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	
 	\subsection{Choix de la fonction de perte}
+	
+	
+	\begin{frame}[t]{Réseaux de neurones : l'entraînement}
+		\begin{itemize}[<+->]
+			\item Il s'agit de trouver les "meilleurs" paramètres 
+			\item Dans le cas de la régression linéaire, les meilleurs étaient ceux minimisant la MSE
+		\end{itemize}
+		\vspace{\baselineskip}
+		\visible<3->{Avant d'entraîner un réseau de neurone, il faut :}
+		\vspace{\baselineskip}
+		\pause
+		\begin{enumerate}[<+->]
+			\item Définir ce que l'on attend de notre réseau
+			\item Trouver une \textbf{fonction de perte} pertinente
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Exemples de fonctions de perte}
+		\begin{center}
+			\resizebox{\textwidth}{!}{
+				\bgroup
+				\everymath{\displaystyle}
+				\renewcommand{\arraystretch}{2.2}
+				
+				\begin{tabular}{ccc}
+					
+					$ \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 $ & 
+					$ \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i| $ & 
+					$ \begin{cases} \frac{1}{2}(y-\hat{y})^2 & \text{si } |y-\hat{y}| \le \delta \\ \delta |y-\hat{y}| - \frac{1}{2}\delta^2 & \text{sinon} \end{cases} $ \\[4ex]
+					
+					$ - \frac{1}{n} \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right] $ & 
+					$ - \sum_{i=1}^{C} y_i \log(\hat{y}_i) $ & 
+					$ -\alpha_t (1 - p_t)^\gamma \log(p_t) $ \\[4ex]
+					
+					$ \max(0, 1 - y \cdot \hat{y}) $ & 
+					$ \max\left(0, \|f(A) - f(P)\|_2^2 - \|f(A) - f(N)\|_2^2 + \alpha\right) $ & 
+					$ Y \frac{1}{2} D^2 + (1 - Y) \frac{1}{2} \max(0, m - D)^2 $ \\[4ex]
+					
+					$ \sum_{x} P(x) \log\left(\frac{P(x)}{Q(x)}\right) $ & 
+					$ 1 - \frac{2 \sum y_i \hat{y}_i}{\sum y_i + \sum \hat{y}_i} $ & 
+					$ 1 - \frac{\sum A_i B_i}{\sqrt{\sum A_i^2} \sqrt{\sum B_i^2}} $ \\[4ex]
+					
+					$ \sum_{i=1}^{n} \log(\cosh(\hat{y}_i - y_i)) $ & 
+					$ \frac{1}{n} \sum_{i=1}^{n} (\log(y_i + 1) - \log(\hat{y}_i + 1))^2 $ & 
+					$ \mathbb{E}_{\tilde{x}}[D(\tilde{x})] - \mathbb{E}_{x}[D(x)] $ \\
+					
+				\end{tabular}
+				\egroup
+			}
+		\end{center}
+	\end{frame}
+	
+	
 	\section{Modèles Génératifs}
+	
+	
+	\begin{frame}{Modèles Génératifs}
+		\begin{center}
+			\resizebox{\textwidth}{!}{%
+				\begin{tikzpicture}[
+					>=stealth,
+					neuron/.style={circle, draw, thick, minimum size=0.4cm, inner sep=0pt},
+					znode/.style={neuron, fill=black!10, draw=black!50},
+					gnode/.style={neuron, fill=brandAccentLight, draw=brandAccent},
+					xnode/.style={neuron, fill=black!20, draw=black!80},
+					dnode/.style={neuron, fill=brandPurple!10, draw=brandPurple},
+					glink/.style={-, draw=brandAccent!30, very thin},
+					dlink/.style={-, draw=brandPurple!30, very thin}
+					]
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 2.5)}] in {1,...,4}
+					\node[znode] (Z-\i) at (0, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 4)}] in {1,...,7}
+					\node[gnode] (G1-\i) at (2, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 5.5)}] in {1,...,10}
+					\node[gnode] (G2-\i) at (4, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 5.5)}] in {1,...,10}
+					\node[gnode] (G3-\i) at (6, \y) {};
+					
+					
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 5.5)}] in {1,...,10}
+					\node[xnode] (X-\i) at (8, \y) {};
+					
+					
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 5.5)}] in {1,...,10}
+					\node[dnode] (D1-\i) at (10, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 5.5)}] in {1,...,10}
+					\node[dnode] (D2-\i) at (12, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 4)}] in {1,...,7}
+					\node[dnode] (D3-\i) at (14, \y) {};
+					
+					\node[dnode] (Out-1) at (16, 0) {};
+					
+					
+					\begin{pgfonlayer}{background}
+						\foreach \i in {1,...,4} { \foreach \j in {1,...,7} { \draw[glink] (Z-\i) -- (G1-\j); } }
+						\foreach \i in {1,...,7} { \foreach \j in {1,...,10} { \draw[glink] (G1-\i) -- (G2-\j); } }
+						\foreach \i in {1,...,10} { \foreach \j in {1,...,10} { \draw[glink] (G2-\i) -- (G3-\j); } }
+						\foreach \i in {1,...,10} { \foreach \j in {1,...,10} { \draw[glink] (G3-\i) -- (X-\j); } }
+						
+						\foreach \i in {1,...,10} { \foreach \j in {1,...,10} { \draw[dlink] (X-\i) -- (D1-\j); } }
+						\foreach \i in {1,...,10} { \foreach \j in {1,...,10} { \draw[dlink] (D1-\i) -- (D2-\j); } }
+						\foreach \i in {1,...,10} { \foreach \j in {1,...,7} { \draw[dlink] (D2-\i) -- (D3-\j); } }
+						\foreach \i in {1,...,7} { \draw[dlink] (D3-\i) -- (Out-1); }
+					\end{pgfonlayer}
+					
+				\end{tikzpicture}%
+			}
+		\end{center}
+	\end{frame}
+	
+	
 	\section{Grands Modèles de Langage (LLM)}
+	
+	
+	\begin{frame}{Grands Modèles de Langage (LLM)}
+		\pause
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[anchor=north, yshift=1cm] at (current page.north) {
+				\begin{tikzpicture}[
+					>=stealth,
+					neuron/.style={circle, draw, thick, minimum size=0.4cm, inner sep=0pt},
+					znode/.style={neuron, fill=black!10, draw=black!50},
+					gnode/.style={neuron, fill=brandAccentLight, draw=brandAccent},
+					xnode/.style={neuron, fill=black!20, draw=black!80},
+					dnode/.style={neuron, fill=brandPurple!10, draw=brandPurple},
+					glink/.style={-, draw=brandAccent!30, very thin},
+					dlink/.style={-, draw=brandPurple!30, very thin}
+					]
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 2.5)}] in {1,...,4}
+					\node[znode] (Z-\i) at (0, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 4)}] in {1,...,7}
+					\node[gnode] (G1-\i) at (2, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[gnode] (G2-\i) at (4, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[gnode] (G3-\i) at (6, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[gnode] (G4-\i) at (8, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[gnode] (G5-\i) at (10, \y) {};
+					
+					
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[xnode] (X-\i) at (12, \y) {};
+					
+					
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[dnode] (D1-\i) at (14, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[dnode] (D2-\i) at (16, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[dnode] (D3-\i) at (18, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 10.5)}] in {1,...,20}
+					\node[dnode] (D4-\i) at (20, \y) {};
+					
+					\foreach \i [evaluate=\i as \y using {0.6*(\i - 4)}] in {1,...,7}
+					\node[dnode] (D5-\i) at (20, \y) {};
+					
+					\node[dnode] (Out-1) at (22, 0) {};
+					
+					
+					\begin{pgfonlayer}{background}
+						\foreach \i in {1,...,4} { \foreach \j in {1,...,7} { \draw[glink] 	(Z-\i) -- (G1-\j); } }
+						\foreach \i in {1,...,7} { \foreach \j in {1,...,20} { 	\draw[glink] (G1-\i) -- (G2-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[glink] (G2-\i) -- (G3-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[glink] (G3-\i) -- (G4-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[glink] (G4-\i) -- (G5-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[glink] (G5-\i) -- (X-\j); } }
+						
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[dlink] (X-\i) -- (D1-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[dlink] (D1-\i) -- (D2-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[dlink] (D2-\i) -- (D3-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,20} { 	\draw[dlink] (D3-\i) -- (D4-\j); } }
+						\foreach \i in {1,...,20} { \foreach \j in {1,...,7} { \draw[dlink] (D4-\i) -- (D5-\j); } }
+						\foreach \i in {1,...,7} { \draw[dlink] (D4-\i) -- (Out-1); }
+					\end{pgfonlayer}
+				\end{tikzpicture}
+			};
+		\end{tikzpicture}
+	\end{frame}
+	
+	
 	\section{Pour résumer}
+	
+	
+	\begin{frame}{Pour résumer}
+		\begin{center}
+			\begin{tikzpicture}[
+				set/.style={ellipse, line width=0.8pt, fill opacity=0.15},
+				label/.style={font=\sffamily\bfseries\small, text=black!80}
+				]
+				
+				\node[set, fill=Grad5!20, draw=Grad5, minimum width=11.5cm, minimum height=7.5cm] (Alg) at (0,0) {};
+				\node[label, text=Grad5, anchor=north] at (Alg.north) {Algorithmes};
+				
+				\node[set, fill=Grad4!30, draw=Grad4, minimum width=9.5cm, minimum height=6cm] (ML) at (0,-0.3) {};
+				\node[label, text=Grad4, anchor=north] at (ML.north) {Apprentissage Machine (ML)};
+				
+				\node[set, fill=Grad3!40, draw=Grad3, minimum width=7.5cm, minimum height=4.5cm] (NN) at (0,-0.6) {};
+				\node[label, text=Grad3, anchor=north] at (NN.north) {Réseaux de Neurones (DL)};
+				
+				\node[set, fill=Grad2!50, draw=Grad2, minimum width=5cm, minimum height=2.8cm] (Gen) at (0,-0.9) {};
+				\node[label, text=Grad2, anchor=north] at (Gen.north) {Modèles Génératifs};
+				
+				\node[set, fill=Grad1!60, draw=Grad1, minimum width=2.5cm, minimum height=1.2cm] (LLM) at (0,-1.3) {};
+				\node[label, text=Grad1] at (LLM.center) {LLMs};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
 	
 	
 	
